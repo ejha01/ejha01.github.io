@@ -81,7 +81,22 @@
     <div class="section">
         <div class="section-header">Using NCC for Single-Scale Color Images</div>
         <div class="body-text">
-            <!-- Body text for the NCC section goes here -->
+            In this project, I tackled the challenge of aligning the red and green channels to the blue channel 
+            using a simple x, y translation model. By treating the blue channel as the anchor, I implemented a brute 
+            force search over a displacement range of [-15, 15] x [-15, 15], aiming to find the best alignment using 
+            Normalized Cross-Correlation (NCC).
+
+            The alignment process involved normalizing each image channel and then calculating the dot product between 
+            the shifted and reference channels. This allowed me to determine how well they aligned based on their pixel 
+            similarities. For every possible shift, I computed the NCC score and tracked the displacement with the highest 
+            value, ensuring the most accurate alignment.
+
+            At first, I faced a peculiar issue where the algorithm stubbornly returned a (0, 0) shift—basically, no alignment 
+            at all. After investigating, I found that the culprit was the noisy edges of the images, which threw off the 
+            alignment calculations. To fix this, I cropped 10% off the borders of each image before running the alignment. Additionally, 
+            I used np.roll for circular translations, which kept the image intact by wrapping pixels around instead of introducing 
+            zeros during the shift.
+    </div>
         </div>
         <div class="subsection-header">Results</div>
         <div class="image-gallery">
