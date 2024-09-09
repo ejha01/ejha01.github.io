@@ -1,1 +1,172 @@
-Project 1 CS 180
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 180 Project 1 - Colorizing the Prokudin-Gorskii Photo Collection by Eshani Jha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            color: #2c3e50;
+        }
+        .section {
+            margin-top: 40px;
+        }
+        .section-header {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 24px;
+            font-family: 'Georgia', serif;
+            text-align: center;
+        }
+        .subsection-header {
+            background-color: #e74c3c;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 20px;
+            font-family: 'Georgia', serif;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .body-text {
+            margin-top: 15px;
+            font-size: 18px;
+            text-align: justify;
+        }
+        .image-gallery {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        .image-container {
+            text-align: center;
+        }
+        .image-container img {
+            width: 300px;
+            height: auto;
+        }
+        .image-label {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CS 180 Project 1 - Colorizing the Prokudin-Gorskii Photo Collection by Eshani Jha</h1>
+
+    <!-- Overview Section -->
+    <div class="section">
+        <div class="section-header">Overview</div>
+        <div class="body-text">
+            <!-- Body text for the Overview goes here -->
+        </div>
+    </div>
+
+    <!-- NCC Section -->
+    <div class="section">
+        <div class="section-header">Using NCC for Single-Scale Color Images</div>
+        <div class="body-text">
+            <!-- Body text for the NCC section goes here -->
+        </div>
+        <div class="subsection-header">Results</div>
+        <div class="image-gallery">
+            <div class="image-container">
+                <div class="image-label">Cathedral</div>
+                <img src="cathedral.jpg" alt="Cathedral Image">
+                <div class="image-label">
+                    G channel offset: (2, 5)<br>
+                    R channel offset: (3, 12)
+                </div>
+            </div>
+            <div class="image-container">
+                <div class="image-label">Monastery</div>
+                <img src="monastery.jpg" alt="Monastery Image">
+                <div class="image-label">
+                    G channel offset: (2, -3)<br>
+                    R channel offset: (2, 3)
+                </div>
+            </div>
+            <div class="image-container">
+                <div class="image-label">Tobolsk</div>
+                <img src="tobolsk.jpg" alt="Tobolsk Image">
+                <div class="image-label">
+                    G channel offset: (3, 3)<br>
+                    R channel offset: (3, 6)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coarse-to-Fine Section -->
+    <div class="section">
+        <div class="section-header">Using Coarse-to-Fine Pyramid Speedup</div>
+        <div class="body-text">
+            <!-- Body text for the Coarse-to-Fine section goes here -->
+        </div>
+        <div class="subsection-header">Results</div>
+        <div class="image-gallery">
+            <div class="image-container">
+                <div class="image-label">Church</div>
+                <img src="church.jpg" alt="Church Image">
+                <div class="image-label">
+                    G channel offset: (7, 46)<br>
+                    R channel offset: (-8, 94)
+                </div>
+            </div>
+            <div class="image-container">
+                <div class="image-label">Onion Church</div>
+                <img src="onion_church.jpg" alt="Onion Church Image">
+                <div class="image-label">
+                    G channel offset: (9, 78)<br>
+                    R channel offset: (62, 126)
+                </div>
+            </div>
+            <div class="image-container">
+                <div class="image-label">Train</div>
+                <img src="train.jpg" alt="Train Image">
+                <div class="image-label">
+                    G channel offset: (3, 3)<br>
+                    R channel offset: (3, 6)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bells and Whistles Section -->
+    <div class="section">
+        <div class="section-header">Bells and Whistles</div>
+        <div class="body-text">
+            <!-- Body text for Bells and Whistles section goes here -->
+        </div>
+        <div class="subsection-header">Results</div>
+        <div class="image-gallery">
+            <div class="image-container">
+                <div class="image-label">Emir without Sobel</div>
+                <img src="emir_without_sobel.jpg" alt="Emir without Sobel Image">
+                <div class="image-label">
+                    G channel offset: (43, 78)<br>
+                    R channel offset: (-334, 126)
+                </div>
+            </div>
+            <div class="image-container">
+                <div class="image-label">Emir with Sobel</div>
+                <img src="emir_with_sobel.jpg" alt="Emir with Sobel Image">
+                <div class="image-label">
+                    G channel offset with Sobel: (16, 78)<br>
+                    R channel offset with Sobel: (33, 142)
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
