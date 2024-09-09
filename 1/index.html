@@ -98,10 +98,8 @@
             </p>
 
             <p>
-                At first, I faced a peculiar issue where the algorithm stubbornly returned a (0, 0) shift—basically, no alignment 
-                at all. After investigating, I found that the culprit was the noisy edges of the images, which threw off the 
-                alignment calculations. To fix this, I cropped 10% off the borders of each image before running the alignment. Additionally, 
-                I used np.roll for circular translations, which kept the image intact by wrapping pixels around instead of introducing 
+                I cropped 10% off the borders of each image before running the alignment to limit the distraction from the noisy edges. Additionally, 
+                I also used np.roll for circular translations, which kept the image intact by wrapping pixels around instead of introducing 
                 zeros during the shift.
             </p>
     </div>
@@ -211,7 +209,11 @@
             <p>
                 A significant improvement can be seen in the alignment of "emir.tif." Without Sobel filtering, the offsets for the 
                 Green and Red channels were (43, 78) and (-334, 126), respectively. However, after applying the Sobel filter, these 
-                offsets were refined to (16, 78) for the Green channel and (33, 142) for the Red channel, leading to a much cleaner final image.
+                offsets were refined to (16, 78) for the Green channel and (33, 142) for the Red channel, leading to a much cleaner final image. 
+                This is because the images being matched do not have identical brightness values. This disparity between the channels can 
+                complicate the alignment process, since each channel may capture different details and brightness contrasts. The Sobel filter 
+                mitigates this issue by focusing on edge information rather than raw pixel intensity, allowing the algorithm to align the 
+                images more effectively.
             </p>
         </div>
         <div class="subsection-header">Results</div>
