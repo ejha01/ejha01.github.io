@@ -131,7 +131,19 @@
     <div class="section">
         <div class="section-header">Using Coarse-to-Fine Pyramid Speedup</div>
         <div class="body-text">
-            <!-- Body text for the Coarse-to-Fine section goes here -->
+            Aligning high-resolution images using brute force methods is inefficient, especially when dealing with larger 
+            .tif images where the displacements extend far beyond the small window of [-15, 15]. Searching blindly across a 
+            larger space becomes extremely slow. To overcome this, I employed a pyramid search algorithm that drastically speeds 
+            up the process by scaling the images down and progressively refining the alignment.
+
+            The algorithm works by first downscaling the image by a factor of 2 until it reaches a manageable size, typically 
+            around 100-200 pixels. At this reduced resolution, I perform the alignment using a broad search window of [-20, 20]. 
+            Once the alignment is calculated at this coarse scale, I upscale both the image and the calculated offset by a factor 
+            of 2 and then search within a smaller range of [-2, 2]. This process repeats at increasingly higher resolutions, refining 
+            the offset each time until we return to the original image size.
+
+            This coarse-to-fine approach ensures the alignment process is both efficient and accurate, even for high-resolution images, without sacrificing precision.
+    </div>
         </div>
         <div class="subsection-header">Results</div>
         <div class="image-gallery">
