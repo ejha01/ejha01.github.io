@@ -86,11 +86,13 @@
             force search over a displacement range of [-15, 15] x [-15, 15], aiming to find the best alignment using 
             Normalized Cross-Correlation (NCC).
 
+            
             The alignment process involved normalizing each image channel and then calculating the dot product between 
             the shifted and reference channels. This allowed me to determine how well they aligned based on their pixel 
             similarities. For every possible shift, I computed the NCC score and tracked the displacement with the highest 
             value, ensuring the most accurate alignment.
 
+            
             At first, I faced a peculiar issue where the algorithm stubbornly returned a (0, 0) shift—basically, no alignment 
             at all. After investigating, I found that the culprit was the noisy edges of the images, which threw off the 
             alignment calculations. To fix this, I cropped 10% off the borders of each image before running the alignment. Additionally, 
@@ -136,12 +138,14 @@
             larger space becomes extremely slow. To overcome this, I employed a pyramid search algorithm that drastically speeds 
             up the process by scaling the images down and progressively refining the alignment.
 
+            
             The algorithm works by first downscaling the image by a factor of 2 until it reaches a manageable size, typically 
             around 100-200 pixels. At this reduced resolution, I perform the alignment using a broad search window of [-20, 20]. 
             Once the alignment is calculated at this coarse scale, I upscale both the image and the calculated offset by a factor 
             of 2 and then search within a smaller range of [-2, 2]. This process repeats at increasingly higher resolutions, refining 
             the offset each time until we return to the original image size.
 
+            
             This coarse-to-fine approach ensures the alignment process is both efficient and accurate, even for high-resolution images, without sacrificing precision.
     </div>
         </div>
@@ -178,7 +182,23 @@
     <div class="section">
         <div class="section-header">Bells and Whistles</div>
         <div class="body-text">
-            <!-- Body text for Bells and Whistles section goes here -->
+            For further refinement of the color channel alignment, I applied a Sobel filter, which is 
+            commonly used for edge detection in images. This technique helps to align the sharp transitions 
+            in brightness between different parts of the image, making the alignment process more robust, 
+            especially in cases where strong edges are present. By first applying the Sobel filter to each 
+            color channel (Blue, Green, and Red), I focused on aligning the edges between the channels, ensuring 
+            that key image details like borders and contours were matched up more precisely.
+
+            
+            After filtering, I used the Pyramid search algorithm to align the Sobel-processed channels, which improved 
+            the accuracy of the offsets compared to the non-filtered version. Once I had the Sobel-based alignment, I used 
+            those calculated offsets to align the original, unfiltered channels. This approach proved particularly effective 
+            for certain images, where subtle improvements in alignment were critical for visual quality.
+
+            
+            A significant improvement can be seen in the alignment of "emir.tif." Without Sobel filtering, the offsets for the 
+            Green and Red channels were (43, 78) and (-334, 126), respectively. However, after applying the Sobel filter, these 
+            offsets were refined to (16, 78) for the Green channel and (33, 142) for the Red channel, leading to a much cleaner final image.
         </div>
         <div class="subsection-header">Results</div>
         <div class="image-gallery">
