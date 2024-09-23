@@ -116,10 +116,8 @@
         <div class="content">
             <p>When applying the finite difference operator alone, I noticed the results were unclear. Fortunately, we can use a Gaussian filter to 
                 smooth the image and reduce this noise. By convolving the original image with a Gaussian filter, I created a blurred versio. Then, I repeated 
-                the same gradient magnitude computation as before.</p>
-            <p>To create a 2D Gaussian filter, I used <em>cv2.getGaussianKernel()</em> to generate a 1D Gaussian and take the outer product with its transpose 
-            to form a 2D kernel. After applying this blur, the noise is significantly reduced.</p>
-            <p>We can simplify the process further by combining the Gaussian filter with the finite difference operators <em>D<sub>x</sub></em> and <em>D<sub>y</sub></em>, 
+                the same gradient magnitude computation as before. To create a 2D Gaussian filter, I used <em>cv2.getGaussianKernel()</em> to generate a 1D Gaussian and take the outer product with its transpose 
+            to form a 2D kernel. After applying this blur, the noise is significantly reduced. We can simplify the process further by combining the Gaussian filter with the finite difference operators <em>D<sub>x</sub></em> and <em>D<sub>y</sub></em>, 
             creating Derivative of Gaussian (DoG) filters. This allows us to achieve the same results using a single convolution, rather than two. The resulting DoG filters are displayed below.</p>
             <p>Comparing the two methods, the DoG filters provide the same results but with cleaner and sharper edges, demonstrating the effectiveness of 
             Gaussian smoothing in edge detection.</p>
