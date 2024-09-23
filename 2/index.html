@@ -114,14 +114,14 @@
     <div>
         <h2 class="section-heading">Derivative of Gaussian (DoG) Filter</h2>
         <div class="content">
-            <p>When applying the finite difference operator alone, I noticed the results were quite noisy. Fortunately, we can use a Gaussian filter to 
-                smooth the image and reduce this noise. By convolving the original image with a Gaussian filter, we create a blurred version, and 
-                then repeat the same gradient magnitude computation as before.</p>
-            <p>To create a 2D Gaussian filter, we use <em>cv2.getGaussianKernel()</em> to generate a 1D Gaussian and take the outer product with its transpose 
+            <p>When applying the finite difference operator alone, I noticed the results were unclear. Fortunately, we can use a Gaussian filter to 
+                smooth the image and reduce this noise. By convolving the original image with a Gaussian filter, I created a blurred versio. Then, I repeated 
+                the same gradient magnitude computation as before.</p>
+            <p>To create a 2D Gaussian filter, I used <em>cv2.getGaussianKernel()</em> to generate a 1D Gaussian and take the outer product with its transpose 
             to form a 2D kernel. After applying this blur, the noise is significantly reduced.</p>
             <p>We can simplify the process further by combining the Gaussian filter with the finite difference operators <em>D<sub>x</sub></em> and <em>D<sub>y</sub></em>, 
             creating Derivative of Gaussian (DoG) filters. This allows us to achieve the same results using a single convolution, rather than two. The resulting DoG filters are displayed below.</p>
-            <p>Comparing the two methods, the DoG filters provide the same results but with less noise and cleaner edges, demonstrating the effectiveness of 
+            <p>Comparing the two methods, the DoG filters provide the same results but with cleaner and sharper edges, demonstrating the effectiveness of 
             Gaussian smoothing in edge detection.</p>
         </div>
 
@@ -135,15 +135,20 @@
         <h2 class="section-heading">Image "Sharpening"</h2>
         <div class="content">
             <p>Image sharpening is achieved through the unsharp mask technique, which enhances the high-frequency details of an image. 
-            The process begins by applying a Gaussian blur to the image, which acts as a low-pass filter, retaining only the low-frequency 
+            The process begins by applying a Gaussian blur to the image (which acts as a low-pass filter), retaining only the low-frequency 
             components. By subtracting this blurred version from the original image, we isolate the high frequencies, which are responsible for finer details.</p>
-            <p>To sharpen the image, we add the scaled high-frequency components back to the original image. This increases the strength of the 
+            <p>To sharpen the image, we then add the scaled high-frequency components back to the original image. This increases the strength of the 
             high frequencies, making the image appear crisper and more defined. The amount of sharpening can be controlled by scaling these high 
             frequencies using a factor, typically referred to as alpha. This entire operation can be combined into a single convolution, known as the unsharp mask filter.</p>
         </div>
 
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
+            <p>I sharpened the image of the Taj Mahal using different sharpening intensities with alpha values of 1, 2, and 3. As the alpha increases, 
+                the edges of the image become more defined, and the architectural details of the building stand out more prominently, especially at the 
+                highest alpha value. This sharpening process mimics the techniques used in modern smartphone cameras to enhance image quality, making 
+                details clearer and crisper in photos.
+                <p>
             <img src="sharpened_normalized.png" alt="Sharpening the Taj Mahal">
         </div>
 
@@ -152,7 +157,7 @@
             <p>For demonstration, I applied the unsharp mask technique to several images including flowers, water, and cows. In the case of the rose 
             flowers, sharpening revealed intricate details such as wrinkles in the petals that were not noticeable before. Similarly, in the image 
             of the cow, the sharpening made the individual blades of grass appear much crisper and more defined. However, for the image of water, 
-            the effect was minimal, likely due to the smoother nature of the surface, which lacks the fine details that benefit from sharpening.</p>
+            the effect was minimal. This is likely due to the smoother nature of the surface, which lacks the fine details that benefit from sharpening.</p>
             <img src="flowers_sharp.png" alt="Sharpening of Flower Image">
             <img src="cows_sharp.png" alt="Sharpeniing of Cow Image">
             <img src="ocean_sharp.png" alt="Sharpeniing of Water Image">
@@ -162,16 +167,19 @@
     <div>
         <h2 class="section-heading">Hybrid Images with FFT</h2>
         <div class="content">
-            <p>The goal here was to create hybrid images, which change in interpretation depending on the viewing distance. This concept is based on 
-            the idea that high-frequency details dominate when viewed up close, while only the low-frequency, smoother components are visible from afar. 
-            By blending the high frequencies of one image with the low frequencies of another, we create a hybrid image that shifts in perception as 
-            distance changes. To achieve this, I applied a low-pass Gaussian filter to one image to capture the low frequencies and subtracted this from 
-            the original image to isolate the high frequencies in the second image. Below are examples where one image contributes its low frequencies, 
-            while one image provides the high frequencies.</p>
+            <p>The goal here was to create hybrid images which change in interpretation depending on the viewing distance. This concept is based on 
+            the idea that high-frequency components dominate when viewed up close, while only the low-frequency components are visible from afar. 
+            By blending the high frequencies of one image with the low frequencies of another, we can create a hybrid image that shifts in perception as 
+            distance changes. To achieve this, I applied a low-pass Gaussian filter to one image to capture the low frequencies. For the second image, I again
+            applied the low-pass filter and subtracted this from the original image to isolate the high frequencies in the second image. Below are examples where one image 
+            contributes its low frequencies while one image provides the high frequencies.</p>
         </div>
 
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
+            <p> Here we have Nutmeg, the cat, and Derek, the guy. By blending features from both images, we can explore how different aspects of each subject combine. This
+                results in some intriguing visual effects.
+            <p>
             <img src="aligned_all.png" alt="Result Image">
             <img src="nutrek.png" alt="Result Image">
         </div>
@@ -180,8 +188,8 @@
         <div class="content">
             <p>As an example, I blended two members of the BLACKPINK girl group: Jennie and Lisa. I applied a low-pass filter to 
                 Lisa’s image and a high-pass filter to Jennie’s image, creating a hybrid image that shifts in perception depending 
-                on the viewing distance. Up close, you can see Jennie’s high-frequency details, while from a distance, Lisa’s l
-                ow-frequency features dominate.</p>
+                on the viewing distance. Up close, you can see Jennie’s high-frequency details, while from a distance, Lisa’s low-frequency 
+                features dominate.</p>
 
             <img src="align_bp.png" alt="Unsuccessful Result Image">
             <img src="bp_bw.png" alt="Unsuccessful Result Image">
@@ -229,8 +237,7 @@
             <p>To blend images, such as in the "Orapple" example (a combination of an apple and an orange), we first need to create a Gaussian stack of the 
             mask, which determines how the two images will be merged. Once we have the mask, we multiply each level of the Laplacian stacks for both images 
             (apple and orange) by their corresponding levels of the mask to generate intermediate masked stacks. These intermediate stacks are then collapsed 
-            and summed to produce the final blended image.</p>
-            <p>Below, I applied this process to recreate the outcomes shown in Figure 3.42 from Szelski. The masked stacks for both the apple and orange 
+            and summed to produce the final blended image. Below, I applied this process to recreate the outcomes shown in Figure 3.42 from Szelski. The masked stacks for both the apple and orange 
             are visualized, followed by the resulting "Orapple" stack, and finally, the blended image.</p>
         </div>
 
@@ -243,9 +250,9 @@
         <h3 class="subsection-heading">Extra Results</h3>
         <div class="content">
             <p>I applied the same blending technique to combine images of a BMW and a Mercedes, blending them down the middle. Since the images
-            had different sizes and orientations, I first used <em>align_img.py</em> to align and resize them. I chose the car hood and wheel axle as alignment points. 
-            This step ensured that the features from both cars were properly aligned, allowing for a smooth transition at the seam. After alignment, 
-            the blending process produced a seamless result, effectively merging the two car images without noticeable distortions.</p>
+            had different sizes and orientations, I first used <em>align_image_code.py</em> to align and resize them. I chose the car hood and wheel axle as alignment points. 
+            This step ensured that the bodies of both cars were properly aligned, allowing for a smooth transition at the seam. After alignment, 
+            the blending process effectively merged the two car images without noticeable distortions.</p>
             <img src="car_align.png" alt="Mask for Orapple">
             <img src="car_mask.png" alt="Orapple">
             <img src="car_blend.png" alt="Orapple">
