@@ -65,11 +65,11 @@
             display: block;
             max-width: 100%;
             height: auto;
-            margin-bottom: 10px;
+            margin: 0 auto 10px auto; /* Center images horizontally */
             border: 2px solid #ddd;
             border-radius: 10px;
         }
-
+        
         .content {
             padding: 5px 0; /* Reduced padding */
         }
@@ -173,7 +173,7 @@
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
             <p>Place your images here.</p>
-            <img src="path_to_your_image.png" alt="Result Image">
+            <img src="nutrek.png" alt="Result Image">
         </div>
 
         <h3 class="subsection-heading">Successful Results</h3>
@@ -218,14 +218,14 @@
     </div>
 
     <div>
-        <h2 class="section-heading">Multiresolution Blending (a.k.a. the oraple!)</h2>
+        <h2 class="section-heading">Multiresolution Blending (a.k.a. the orapple!)</h2>
         <div class="content">
-            <p>To blend images, such as in the "Oraple" example (a combination of an apple and an orange), we first need to create a Gaussian stack of the 
+            <p>To blend images, such as in the "Orapple" example (a combination of an apple and an orange), we first need to create a Gaussian stack of the 
             mask, which determines how the two images will be merged. Once we have the mask, we multiply each level of the Laplacian stacks for both images 
             (apple and orange) by their corresponding levels of the mask to generate intermediate masked stacks. These intermediate stacks are then collapsed 
             and summed to produce the final blended image.</p>
-            <p>Below, I applied this process to recreate the outcomes shown in Figure 3.42 from Szelski (Ed 2) page 167. The masked stacks for both the apple and orange 
-            are visualized, followed by the resulting "Oraple" stack, and finally, the blended image.</p>
+            <p>Below, I applied this process to recreate the outcomes shown in Figure 3.42 from Szelski. The masked stacks for both the apple and orange 
+            are visualized, followed by the resulting "Orapple" stack, and finally, the blended image.</p>
         </div>
 
         <h3 class="subsection-heading">Results</h3>
