@@ -79,14 +79,26 @@
     <div class="section-box">
         <h2>Overview</h2>
         <div class="content">
-            <p>In this project, I explored various techniques for image filtering and frequency manipulation to better understand how images can be processed and enhanced. I started by applying the Finite Difference Operator to compute gradients and edges, and then improved the results using a Derivative of Gaussian (DoG) filter to reduce noise. I also experimented with sharpening images through unsharp masking, which helped me see how adding high-frequency details can make images look crisper. Next, I created hybrid images by blending high and low frequencies from different images to produce unique, distance-dependent effects. Finally, I implemented Gaussian and Laplacian stacks for multiresolution blending, combining two images smoothly, including experimenting with irregular masks. This project gave me hands-on experience with key concepts in computer vision, including convolution, filtering, and frequency-based image analysis.</p>
+            <p>In this project, I explored various techniques for image filtering and frequency manipulation to better understand how images 
+            can be processed and enhanced. I started by applying the Finite Difference Operator to compute gradients and edges, and then improved 
+            the results using a Derivative of Gaussian (DoG) filter to reduce noise. I also experimented with sharpening images through unsharp 
+            masking, which helped me see how adding high-frequency details can make images look crisper. Next, I created hybrid images by blending 
+            high and low frequencies from different images to produce unique, distance-dependent effects. Finally, I implemented Gaussian and 
+            Laplacian stacks for multiresolution blending, combining two images smoothly, including experimenting with irregular masks. This project 
+            gave me hands-on experience with key concepts in computer vision, including convolution, filtering, and frequency-based image analysis.</p>
         </div>
     </div>
 
     <div class="section-box">
         <h2>Finite Difference Operator</h2>
         <div class="content">
-            <p>Place your text about Finite Difference Operator here.</p>
+            <p>To compute the gradient magnitude of an image, I first applied finite difference operators in both the x and y directions. 
+            This involved convolving the image with the respective operators, <em>D<sub>x</sub></em> and <em>D<sub>y</sub></em>, which allowed 
+            me to capture the partial derivatives in both directions. After obtaining the gradients in x and y, I calculated the gradient 
+            magnitude at each pixel using the formula <em>&#8730;(D<sub>x</sub><sup>2</sup> + D<sub>y</sub><sup>2</sup>)</em>, which combines 
+            the two directional derivatives. To create a clear edge image, I then applied thresholding to the gradient magnitude, adjusting 
+            the threshold to highlight the true edges while minimizing noise.
+        </p>
         </div>
 
         <div class="subsection-box">
