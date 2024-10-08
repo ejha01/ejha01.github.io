@@ -105,7 +105,7 @@
 
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <img src="gradient_camera.png" alt="Result Cameraman Gradient Image">
+            <img src="triangulation.jpg" alt="Result Cameraman Gradient Image">
         </div>
     </div>
 
@@ -120,8 +120,13 @@
         </div>
 
         <h3 class="subsection-heading">Results</h3>
+            <div class="image-row" style="display: flex; justify-content: center; gap: 10px;">
+        <img src="jha.png" alt="Irregular Mask Results" style="width: 45%;">
+        <img src="chopra.png" alt="Irregular Mask Results" style="width: 45%;">
+    </div>
+        
         <div class="content">
-            <img src="dog_camera.png" alt="Resulting Cameraman with Filter">
+            <img src="blend.jpg" alt="Resulting Cameraman with Filter">
         </div>
     </div>
 
@@ -136,25 +141,9 @@
 
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <p>I sharpened the image of the Taj Mahal using different sharpening intensities with alpha values of 1, 2, and 3. As the alpha increases, 
-                the edges of the image become more defined, and the architectural details of the building stand out more prominently, especially at the 
-                highest alpha value. This sharpening process mimics the techniques used in modern smartphone cameras to enhance image quality, making 
-                details clearer and crisper in photos.
-                <p>
-            <img src="sharpened_normalized.png" alt="Sharpening the Taj Mahal">
+            <img src="animation.gif" alt="Sharpening the Taj Mahal">
         </div>
-
-        <h3 class="subsection-heading">Extra Results</h3>
-        <div class="content">
-            <p>For demonstration, I applied the unsharp mask technique to several images including flowers, water, and cows. In the case of the rose 
-            flowers, sharpening revealed intricate details such as wrinkles in the petals that were not noticeable before. Similarly, in the image 
-            of the cow, the sharpening made the individual blades of grass appear much crisper and more defined. However, for the image of water, 
-            the effect was minimal. This is likely due to the smoother nature of the surface, which lacks the fine details that benefit from sharpening.</p>
-            <img src="flowers_sharp.png" alt="Sharpening of Flower Image">
-            <img src="cows_sharp.png" alt="Sharpeniing of Cow Image">
-            <img src="ocean_sharp.png" alt="Sharpeniing of Water Image">
-        </div>
-    </div>
+        
 
     <div>
         <h2 class="section-heading">The "Mean Face" of a Population</h2>
@@ -165,12 +154,20 @@
               dataset images, and my face transformed into the average shape.</p>
         </div>
 
-        <h3 class="subsection-heading">Results</h3>
+        <h3 class="subsection-heading">Average Results</h3>
         <div class="content">
-            <img src="apple_gauss.png" alt="Gaussian and Laplacian Results">
-            <img src="apple_laplace.png" alt="Gaussian and Laplacian Results">
-            <img src="orange_gauss.png" alt="Gaussian and Laplacian Results">
-            <img src="orange_laplace.png" alt="Gaussian and Laplacian Results">
+            <img src="average_faces.png" alt="Gaussian and Laplacian Results">
+            <img src="neutral1.png" alt="Gaussian and Laplacian Results">
+            <img src="neutral2.png" alt="Gaussian and Laplacian Results">
+        </div>
+    </div>
+
+        <h3 class="subsection-heading">My Results</h3>
+        <div class="content">
+            <p>The results of warping the average geometry to my face, and vice versa, were not ideal. My round and wide face shape does not align well with the 
+                average, which led to issues like the chin of the neutral male and female being noticeably cut off.</p>
+             <img src="me2neutral.png" alt="Gaussian and Laplacian Results">
+            <img src="neutral2me.png" alt="Gaussian and Laplacian Results">
         </div>
     </div>
 
@@ -185,36 +182,9 @@
 
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <img src="mask_blend.png" alt="Mask for Orapple">
-            <img src="orapple.png" alt="Orapple">
+            <img src="Caricature.png" alt="Mask for Orapple">
         </div>
 
-        <h3 class="subsection-heading">Extra Results</h3>
-        <div class="content">
-            <p>I applied the same blending technique to combine images of a BMW and a Mercedes, blending them down the middle. Since the images
-            had different sizes and orientations, I first used <em>align_image_code.py</em> to align and resize them. I chose the car hood and wheel axle as alignment points. 
-            This step ensured that the bodies of both cars were properly aligned, allowing for a smooth transition at the seam. After alignment, 
-            the blending process effectively merged the two car images without noticeable distortions.</p>
-            <img src="car_align.png" alt="Mask for Orapple">
-            <img src="car_mask.png" alt="Orapple">
-            <img src="car_blend.png" alt="Orapple">
-            <img src="bmw_mercedes.png" alt="Orapple">
-        </div>
-
-        <h3 class="subsection-heading">Extra Results - Irregular Mask</h3>
-        <div class="content">
-            <p>I then experimented with an irregular mask, blending an image of water droplets on a leaf with an image of roses. Using the mask, I made 
-            each water droplet contain part of the rose image. The result was a visually striking effect, where the droplets appeared as though they were 
-            filled with roses. I think this is what true "rose water" should look like!</p>
-            <div class="image-row" style="display: flex; justify-content: center; gap: 10px;">
-        <img src="water_drops.jpg" alt="Irregular Mask Results" style="width: 45%;">
-        <img src="rose.jpg" alt="Irregular Mask Results" style="width: 45%;">
-    </div>
-            <img src="rosewwater_mask.png" alt="Irregular Mask Results">
-            <img src="rosewater_blend.png" alt="Irregular Mask Results">
-            <img src="rosewater.png" alt="Irregular Mask Results">
-        </div>
-    </div>
 
   <div>
         <h2 class="section-heading">Bells and Whistles</h2>
@@ -228,10 +198,7 @@
 
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <img src="apple_gauss.png" alt="Gaussian and Laplacian Results">
-            <img src="apple_laplace.png" alt="Gaussian and Laplacian Results">
-            <img src="orange_gauss.png" alt="Gaussian and Laplacian Results">
-            <img src="orange_laplace.png" alt="Gaussian and Laplacian Results">
+            <img src="morph.png" alt="Gaussian and Laplacian Results">
         </div>
     </div>
 
