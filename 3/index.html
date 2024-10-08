@@ -1,1 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 180 Project 2 - Fun with Filters and Frequencies by Eshani Jha</title>
+    <style>
+        body {
+            font-family: 'Cambria', serif; /* Cambria font */
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            font-size: 18px; /* Increased base font size */
+        }
 
+        /* Top header with orange to yellow blend (top to bottom) */
+        .gradient-header {
+            background: linear-gradient(to bottom, #FFA500, #FFFF00); /* Orange to Yellow */
+            color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        /* Section headings with royal purple to magenta gradient */
+        .section-heading {
+            background: linear-gradient(to right, #7851A9, #FF00FF); /* Royal Purple to Magenta */
+            color: white;
+            padding: 10px;
+            margin-bottom: 5px; /* Reduced margin to close gap */
+            border-radius: 10px;
+        }
+
+        /* Subsection headings with maroon and dark orange gradient */
+        .subsection-heading {
+            background: linear-gradient(to right, #800000, #ff8c00); /* Maroon and Dark Orange */
+            color: white;
+            padding: 8px;
+            margin-bottom: 5px; /* Reduced margin */
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 32px; /* Increased font size */
+            margin: 0;
+        }
+
+        h2 {
+            font-size: 26px; /* Increased font size */
+            margin-bottom: 5px; /* Reduced margin to close gap */
+        }
+
+        h3 {
+            font-size: 22px; /* Increased font size */
+        }
+
+        p {
+            color: #333;
+            line-height: 1.7; /* Improved line spacing for readability */
+            font-size: 20px; /* Increased paragraph font size */
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto 10px auto; /* Center images horizontally */
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+        
+        .content {
+            padding: 5px 0; /* Reduced padding */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gradient-header">
+        <h1>CS 180 Project 3 - Face Morphing and Modelling a Photo Collection by Eshani Jha</h1>
+    </div>
+
+    <div>
+        <h2 class="section-heading">Overview</h2>
+        <div class="content">
+            <p>In this project, I explored face morphing techniques, including warping facial features and blending colors between two images. 
+              I started by defining corresponding points between two faces and used triangulation to create a smooth transition. I then implemented 
+              affine transformations to compute a mid-way face, which combines the shapes and colors of the input images. Additionally, I created a 
+              morph sequence between two faces, generating an animation from one face to another. Finally, I computed the mean face of a population and 
+              extrapolated from this average to produce a caricature. These exercises helped me deepen my understanding of affine warps, 
+              image interpolation, and facial feature manipulation.</p>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="section-heading">Defining Correspondences</h2>
+        <div class="content">
+            <p>To define pairs of corresponding points between two faces, I used a labeling tool from a previous CS 180 student. The keypoints were 
+              consistently labeled across both faces, ensuring smooth transitions. For this project, I labeled my own face and that of Priyanka Chopra, 
+              a well-known Bollywood actress. Once labeled, I computed a Delaunay triangulation based on the midway shape between the two point sets, as 
+              this reduces triangle deformation during morphing. This triangulation was used to control the warping process for a smoother morph result.</p>
+        </div>
+
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="gradient_camera.png" alt="Result Cameraman Gradient Image">
+        </div>
+    </div>
+
+    <div>
+        <h2 class="section-heading">Computing the "Mid-Way Face"</h2>
+        <div class="content">
+            <p>To create the mid-way face between my face and Priyanka Chopra's, I started by computing the average shape, which involved averaging 
+              the corresponding keypoints of both faces. Next, I warped both faces into this new shape by calculating affine transformations for 
+              each triangle in the triangulation. These transformations mapped the original triangles to their positions in the average shape. I then used inverse 
+              warping to determine the pixel colors for each triangle. Finally, I blended the two images by averaging the colors together, producing a smooth transition. 
+              Below, you can see the original images of myself and Priyanka Chopra, along with the resulting mid-way face.</p>
+        </div>
+
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="dog_camera.png" alt="Resulting Cameraman with Filter">
+        </div>
+    </div>
+
+    <div>
+        <h2 class="section-heading">The Morph Sequence</h2>
+        <div class="content">
+            <p>For the morph sequence, I wrote a function that produces a smooth transition between my face and Priyanka Chopra's face. This function uses 
+              point correspondences and triangulation to warp both images into intermediate shapes, controlled by parameters for warping and dissolving the 
+              images. By varying these parameters, I generated a sequence of frames that smoothly morph my face into Priyanka's. The result is a video 
+              sequence as an animated gif.</p>
+        </div>
+
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <p>I sharpened the image of the Taj Mahal using different sharpening intensities with alpha values of 1, 2, and 3. As the alpha increases, 
+                the edges of the image become more defined, and the architectural details of the building stand out more prominently, especially at the 
+                highest alpha value. This sharpening process mimics the techniques used in modern smartphone cameras to enhance image quality, making 
+                details clearer and crisper in photos.
+                <p>
+            <img src="sharpened_normalized.png" alt="Sharpening the Taj Mahal">
+        </div>
+
+        <h3 class="subsection-heading">Extra Results</h3>
+        <div class="content">
+            <p>For demonstration, I applied the unsharp mask technique to several images including flowers, water, and cows. In the case of the rose 
+            flowers, sharpening revealed intricate details such as wrinkles in the petals that were not noticeable before. Similarly, in the image 
+            of the cow, the sharpening made the individual blades of grass appear much crisper and more defined. However, for the image of water, 
+            the effect was minimal. This is likely due to the smoother nature of the surface, which lacks the fine details that benefit from sharpening.</p>
+            <img src="flowers_sharp.png" alt="Sharpening of Flower Image">
+            <img src="cows_sharp.png" alt="Sharpeniing of Cow Image">
+            <img src="ocean_sharp.png" alt="Sharpeniing of Water Image">
+        </div>
+    </div>
+
+    <div>
+        <h2 class="section-heading">The "Mean Face" of a Population</h2>
+        <div class="content">
+            <p>Here I used the Danes dataset and focused on the neutral male and female subcategories. I computed the average face shape for each group 
+              by averaging the annotated keypoints. Then, I warped two images from the datasets into these average shapes, showing how they transform to fit the 
+              average geometry. Finally, I also warped my own face to match the average shape (andd vice versa). Below, you can see the results of the average face, the warped 
+              dataset images, and my face transformed into the average shape.</p>
+        </div>
+
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="apple_gauss.png" alt="Gaussian and Laplacian Results">
+            <img src="apple_laplace.png" alt="Gaussian and Laplacian Results">
+            <img src="orange_gauss.png" alt="Gaussian and Laplacian Results">
+            <img src="orange_laplace.png" alt="Gaussian and Laplacian Results">
+        </div>
+    </div>
+
+    <div>
+        <h2 class="section-heading">Caricatures: Extrapolating from the Mean)</h2>
+        <div class="content">
+            <p>To create caricatures of my face, I extrapolated from the population mean of the neutral females from the Danes dataset. I calculated the 
+              difference between my facial keypoints and the average keypoints, then amplified this difference to create exaggerated versions of my face. 
+              By adding 1.5 times the difference, I generated a more pronounced caricature, and with 0.5 times the difference, I created a subtler version. 
+              After warping my face into these new shapes, I cropped the images to remove any excess background, highlighting the exaggerated features.</p>
+        </div>
+
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="mask_blend.png" alt="Mask for Orapple">
+            <img src="orapple.png" alt="Orapple">
+        </div>
+
+        <h3 class="subsection-heading">Extra Results</h3>
+        <div class="content">
+            <p>I applied the same blending technique to combine images of a BMW and a Mercedes, blending them down the middle. Since the images
+            had different sizes and orientations, I first used <em>align_image_code.py</em> to align and resize them. I chose the car hood and wheel axle as alignment points. 
+            This step ensured that the bodies of both cars were properly aligned, allowing for a smooth transition at the seam. After alignment, 
+            the blending process effectively merged the two car images without noticeable distortions.</p>
+            <img src="car_align.png" alt="Mask for Orapple">
+            <img src="car_mask.png" alt="Orapple">
+            <img src="car_blend.png" alt="Orapple">
+            <img src="bmw_mercedes.png" alt="Orapple">
+        </div>
+
+        <h3 class="subsection-heading">Extra Results - Irregular Mask</h3>
+        <div class="content">
+            <p>I then experimented with an irregular mask, blending an image of water droplets on a leaf with an image of roses. Using the mask, I made 
+            each water droplet contain part of the rose image. The result was a visually striking effect, where the droplets appeared as though they were 
+            filled with roses. I think this is what true "rose water" should look like!</p>
+            <div class="image-row" style="display: flex; justify-content: center; gap: 10px;">
+        <img src="water_drops.jpg" alt="Irregular Mask Results" style="width: 45%;">
+        <img src="rose.jpg" alt="Irregular Mask Results" style="width: 45%;">
+    </div>
+            <img src="rosewwater_mask.png" alt="Irregular Mask Results">
+            <img src="rosewater_blend.png" alt="Irregular Mask Results">
+            <img src="rosewater.png" alt="Irregular Mask Results">
+        </div>
+    </div>
+
+  <div>
+        <h2 class="section-heading">Bells and Whistles</h2>
+        <div class="content">
+            <p>For the "Bells and Whistles" part of my project, I experimented with morphing just the shape, just the appearance, and both the shape 
+              and appearance between my face and Priyanka Chopra's. I created three different morphs: one that focused purely on shape transformation, another 
+              that blended only the appearance, and a final morph that combined both. Morphing just the appearance led to changes in skin tone, texture, and smile. 
+              Morphing the shape modified the facial structure, contributing to a change in perceived ethnicity.
+          </p>
+        </div>
+
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="apple_gauss.png" alt="Gaussian and Laplacian Results">
+            <img src="apple_laplace.png" alt="Gaussian and Laplacian Results">
+            <img src="orange_gauss.png" alt="Gaussian and Laplacian Results">
+            <img src="orange_laplace.png" alt="Gaussian and Laplacian Results">
+        </div>
+    </div>
+
+</body>
+</html>
