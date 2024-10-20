@@ -133,7 +133,6 @@
     <div>
         <h2 class="section-heading">Warp the Images</h2>
         <div class="content">
-            <h2>Image Warping with Bilinear Interpolation</h2>
                 <p> To align images into a seamless mosaic, I implemented a custom warping function that leverages a homography matrix to map the source image into the target 
                   perspective. The homography matrix transforms the corners of the source image, defining the new bounds and creating a pixel grid for the warped image. Using inverse 
                   mapping, each pixel in the target image is then traced back to its corresponding location in the source image. At these locations, I applied bilinear interpolation 
