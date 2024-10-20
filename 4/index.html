@@ -1,1 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 180 Project 4 - Image Warping and Mosaicing by Eshani Jha</title>
+    <style>
+        body {
+            font-family: 'Cambria', serif; /* Cambria font */
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            font-size: 18px; /* Increased base font size */
+        }
 
+        /* Top header with navy blue to rich purple blend (top to bottom) */
+        .gradient-header {
+            background: linear-gradient(to bottom, #000080, #800080); /* Navy Blue to Rich Purple */
+            color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        /* Section headings with maroon to bright orange gradient (left to right) */
+        .section-heading {
+            background: linear-gradient(to right, #FF00FF, #FFA500); /* Magenta to Forest Green */
+            color: white;
+            padding: 10px;
+            margin-bottom: 5px; /* Reduced margin to close gap */
+            border-radius: 10px;
+        }
+        
+        /* Subsection headings with magenta to forest green gradient (top to bottom) */
+        .subsection-heading {
+            background: linear-gradient(to right, #800000, #FFA500); /* Maroon to Bright Orange */
+            color: white;
+            padding: 8px;
+            margin-bottom: 5px; /* Reduced margin */
+            border-radius: 10px;
+        }
+
+
+        h1 {
+            font-size: 32px; /* Increased font size */
+            margin: 0;
+        }
+
+        h2 {
+            font-size: 26px; /* Increased font size */
+            margin-bottom: 5px; /* Reduced margin to close gap */
+        }
+
+        h3 {
+            font-size: 22px; /* Increased font size */
+        }
+
+        p {
+            color: #333;
+            line-height: 1.7; /* Improved line spacing for readability */
+            font-size: 20px; /* Increased paragraph font size */
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto 10px auto; /* Center images horizontally */
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+        
+        .content {
+            padding: 5px 0; /* Reduced padding */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gradient-header">
+        <h1>CS 180 Project 4 - Image Warping and Mosaicing by Eshani Jha</h1>
+    </div>
+
+    <div>
+        <h2 class="section-heading">Overview</h2>
+        <div class="content">
+            <p>In this project, I took a look into the fascinating process of image mosaicing by warping and stitching multiple photographs into seamless 
+              mosaics. Using manually selected correspondence points, I also aligned images through homography transformations. This technique not only allows for the 
+              creation of captivating panoramas, but also demonstrates how projective warping can be applied to rectify images to fit alternate perspectives.</p>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="section-heading">Shoot the Pictures</h2>
+        <div class="content">
+            <p>For this project, I used my Samsung Galaxy S22+ to capture high-quality photographs with fixed frame rates and consistent lighting conditions. To create variety, 
+              I also incorporated video game screenshots by manually panning across different sections of the in-game map with my mouse, capturing individual screenshots to later 
+              stitch into a cohesive mosaic. The goal was to ensure that the transformations between images are projective (i.e., perspective transformations). This is typically 
+              achieved by fixing the center of projection and rotating the camera during capture. I took care to follow these principles to ensure smooth image alignment and warping.</p>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="section-heading">Recover Homographies"</h2>
+        <div class="content">
+            <p>To align the images in the mosaic, I used the same correspondence tool from Project 3 to manually label matching features between each pair of images. This process 
+              generated two sets of corresponding points: <code>src_pts</code> for the source image and <code>dst_pts</code> for the target image. Using these points, I computed the homography matrix following the 
+              Singular Value Decomposition (SVD) approach, as outlined in the referenced paper. </p>
+            <p>For each pair of correspondence points <em>(x<sub>1</sub>, y<sub>1</sub>)</em> and <em>(x<sub>2</sub>, y<sub>2</sub>)</em>, two constraint vectors are created to 
+              form part of the system of equations:</p>
+
+            <pre>
+            Vector 1: [-x₁, -y₁, -1, 0, 0, 0, x₁ · x₂, y₁ · x₂, x₂]
+            Vector 2: [0, 0, 0, -x₁, -y₁, -1, x₁ · y₂, y₁ · y₂, y₂]
+            </pre>
+
+            <p> These vectors are derived by eliminating the scale factor <em>w'</em> in the target homogeneous coordinates, ensuring consistency across the transformation. 
+              The resulting vectors are stacked into a matrix <code>A</code>, which captures the relationship between the source and target points. Next, I passed matrix 
+              <code>A</code> through the SVD function <code>np.linalg.svd(A)</code>, obtaining the matrices <code>U</code>, <code>S</code>, and <code>V<sup>T</sup></code>. The row of 
+              <code>V<sup>T</sup></code> (or the column of <code>V</code>) corresponding to the smallest singular value gives the solution vector <code>v</code>. This vector contains 
+              the elements of the flattened homography matrix.</p>
+            <p>Finally, I reshaped <code>v</code> into a <code>3 × 3</code> matrix <code>H</code>. To ensure the homography matrix is properly scaled, I divided each element of 
+              <code>H</code> by the value in its bottom-right corner. This normalized matrix <code>H</code> provides the transformation needed to warp the source image into the 
+              perspective of the target image.</p>
+        </div>
+
+        <h3 class="subsection-heading">Results</h3>
+            <div class="image-row" style="display: flex; justify-content: center; gap: 10px;">
+        <img src="jha.png" alt="Irregular Mask Results" style="width: 30%;">
+        <img src="chopra.png" alt="Irregular Mask Results" style="width: 30%;">
+    </div>
+        
+        <div class="content">
+            <img src="toypoints.png" alt="Resulting Cameraman with Filter">
+        </div>
+    </div>
+
+    <div>
+        <h2 class="section-heading">Warp the Images</h2>
+        <div class="content">
+            <h2>Image Warping with Bilinear Interpolation</h2>
+                <p> To align images into a seamless mosaic, I implemented a custom warping function that leverages a homography matrix to map the source image into the target 
+                  perspective. The homography matrix transforms the corners of the source image, defining the new bounds and creating a pixel grid for the warped image. Using inverse 
+                  mapping, each pixel in the target image is then traced back to its corresponding location in the source image. At these locations, I applied bilinear interpolation 
+                  to compute smooth pixel values by blending the intensities of neighboring pixels. This ensures that the transitions between images are visually smooth and free of 
+                  harsh boundaries.
+              <p>
+                  The final warped images preserve spatial relationships and aligns accurately with the target image, setting the stage for blending multiple images into a unified mosaic.</p>        
+
+    <div>
+        <h2 class="section-heading">Image Rectification</h2>
+        <div class="content">
+            <p>As part of testing the homography and warping functions, I performed image rectification on objects with known shapes. This process ensures that the code works 
+              correctly by transforming tilted or distorted objects back into their proper rectangular form. I captured images with objects such as my laptop screen and LED remote at an 
+              angle and used the homography transformation to "flatten" their appearance. 
+          <p>Interestingly, when rectifying the remote control, the transformation not only corrected the perspective but also revealed finer details that were initially hard to see. 
+            Surprisingly, symbols like the <em>AUTO</em> button and the <em>W</em> symbol (for white light) became clearly visible after rectification. This demonstrates the power of 
+            perspective correction in uncovering subtle features within an image.</p>
+        </div>
+
+        <h3 class="subsection-heading">Average Results</h3>
+        <div class="content">
+            <img src="average_faces.png" alt="Gaussian and Laplacian Results">
+            <img src="neutral1.png" alt="Gaussian and Laplacian Results">
+            <img src="neutral2.png" alt="Gaussian and Laplacian Results">
+        </div>
+    </div>
+
+        <h3 class="subsection-heading">My Results</h3>
+        <div class="content">
+            <p>The results of warping the average geometry to my face, and vice versa, were not ideal. My round and wide face shape does not align well with the 
+                average, which led to issues like the chin of the neutral male and female being noticeably cut off.</p>
+             <img src="me2neutral.png" alt="Gaussian and Laplacian Results">
+            <img src="neutral2me.png" alt="Gaussian and Laplacian Results">
+        </div>
+    </div>
+
+    <div>
+        <h2 class="section-heading">Blending into a Mosaic</h2>
+        <div class="content">
+            <p>First, I computed a homography matrix to warp one image onto the plane of another. Then, I calculated the bounding box and necessary shifts to align the 
+              warped image with the target image. Finally, both images were stitched together within the mosaic by placing them at their computed positions in the combined frame.</p>
+            <p>I applied this process to create a mosaic of stuffed animals (real-world example) and used blending techniques to eliminate sharp edges. I also experimented with Dota 2 
+              screenshots to explore how parts of a video game map look on a larger scale, as the in-game view is limited. I tested the process on different landscapes, including the 
+              “lane,” which contains mostly similar textures, and the “river,” which has intricate water details.</p>
+        </div>
+
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="Caricature.png" alt="Mask for Orapple">
+        </div>
+
+
+  <div>
+        <h2 class="section-heading">Bells and Whistles</h2>
+        <div class="content">
+            <p>For the "Bells and Whistles" part of my project, I experimented with morphing just the shape, just the appearance, and both the shape 
+              and appearance between my face and Priyanka Chopra's. I created three different morphs: one that focused purely on shape transformation, another 
+              that blended only the appearance, and a final morph that combined both. Morphing just the appearance led to changes in skin tone, texture, and smile. 
+              Morphing the shape modified the facial structure, contributing to a change in perceived ethnicity.
+          </p>
+        </div>
+
+      <h3 class="subsection-heading">Results</h3>
+            <div class="image-row" style="display: flex; justify-content: center; gap: 10px;">
+        <img src="jha.png" alt="Irregular Mask Results" style="width: 30%;">
+        <img src="chopra.png" alt="Irregular Mask Results" style="width: 30%;">
+    </div>
+        <div class="content">
+            <img src="morph.png" alt="Gaussian and Laplacian Results">
+        </div>
+    </div>
+
+</body>
+</html>
