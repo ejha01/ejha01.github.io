@@ -188,5 +188,61 @@
         </div>
     </div>
 
+    <div>
+        <h2 class="section-heading">Detecting Corner Features</h2>
+        <div class="content">
+            <p>In Part A, I manually selected correspondence points to compute the homography matrix. Next, I automated this process using the Harris Corner Detector, 
+                which identifies interest points (corners) in an image. A corner is where two edges intersect, representing a significant change in brightness. Harris corners are 
+                invariant to translation, rotation, and illumination, making them reliable for feature detection.</p> 
+            <p>The detector calculates the structure tensor \(M\) using image derivatives in x and y directions. It scores each window using \(R = \det(M) - k(\text{trace}(M))^2\), 
+                where the eigenvalues of \(M\) determine whether the region contains a corner, edge, or flat area. I applied the Harris detector on both left and right images to extract 
+                corners.</p>
+        </div>
+
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="toy_pan.png" alt="Toy Panorama">
+        </div>
+
+        <h3 class="subsection-heading">Adaptive Non-Maximal Suppression (ANMS)</h3>
+        <div class="content">
+            <p>While the Harris Corner Detector identifies many potential feature points, it often produces too many. To address this, Adaptive Non-Maximal Suppression (ANMS) filters the 
+                points by distributing them evenly across the image, keeping only the strongest features. ANMS calculates a suppression radius for each point defined as the smallest 
+                distance to a significantly stronger point using a robustness parameter \(c = 0.9\).</p> 
+            <p>The algorithm works by computing the Euclidean distance and strength differences between each point and others. Points with non-positive strength differences are 
+                discarded. The nearest valid distance is stored in a min-heap, which maintains the largest suppression radii. While ANMS may not return the points with the highest 
+                strengths, it ensures that the selected features are spatially well-distributed, providing strong, dominant points across the image. The final set of Harris points is 
+                shown below.</p>
+            <img src="toy_pan.png" alt="Toy Panorama">
+        </div>
+    </div>
+
+    <div>
+        <h2 class="section-heading">Extracting Feature Descriptors</h2>
+        <div class="content">
+            <p>With a reduced set of Harris points, the next step is to match points between images using feature descriptors. Each descriptor is created by extracting a 40x40 window 
+                centered on a Harris point. This patch captures a 20-pixel radius around the point in all directions. To generate a smooth, blurred descriptor, the patch is downsampled to 
+                8x8 pixels instead of extracting a smaller patch directly.</p> 
+            <p>The descriptors are then normalized to have a mean of 0 and a standard deviation of 1, making them robust to affine changes in intensity (e.g. bias and gain). These 
+                normalized feature descriptors allow consistent and reliable matching between images.</p>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="section-heading">Matching Feature Descriptors</h2>
+        <div class="content">
+            <p>To match feature descriptors, we compare all descriptor pairs between the two images using Sum of Squared Differences (SSD) or Nearest-Neighbor (NN) scores, where lower 
+                scores indicate better matches. We first narrow the candidates by selecting each feature’s nearest neighbor. Next, we calculate the ratio between the 
+                nearest-neighbor score and the second-nearest-neighbor score. If this ratio is below a chosen threshold (0.4 worked well in my testing), we accept the match. The resulting 
+                matches are visualized with randomly colored points to highlight correspondences between the images.</p>
+        </div>
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <p> Even though some mismatches remain, the majority of the matches are accurate and reliable.</p>
+            <img src="toy_pan.png" alt="Toy Panorama">
+        </div>
+    </div>
+
+            
 </body>
 </html>
