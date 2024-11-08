@@ -243,6 +243,53 @@
         </div>
     </div>
 
+    <div>
+        <h2 class="section-heading">RANSAC</h2>
+        <div class="content">
+            <p>To eliminate false positives from the feature matching process, we apply RANSAC. In each iteration, a random set of 4 matches is selected to compute a homography. We then 
+                evaluate how well this homography aligns the remaining matches, counting the number of inliers it produces.</p> 
+            <p>The homography with the highest number of inliers is selected as the final result. While some true matches may be lost, most correct matches are retained, and all 
+                incorrect matches are removed, leading to more reliable stitching.</p>
+        </div>
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <p> Even though some mismatches remain, the majority of the matches are accurate and reliable.</p>
+            <img src="toy_pan.png" alt="Toy Panorama">
+        </div>
+    </div>
+
+     <div>
+        <h2 class="section-heading">Blending into a Mosaic</h2>
+        <div class="content">
+            <p>I used the same techniques as Part A. First, I computed a homography matrix to warp one image onto the plane of another. Then, I calculated the bounding box and necessary shifts to align the 
+              warped image with the target image. Finally, both images were stitched together within the mosaic by placing them at their computed positions in the combined frame.</p>
+            <p>I applied this process to create a mosaic of stuffed animals (real-world example) and used blending techniques to eliminate sharp edges. I also experimented with Dota 2 
+              screenshots to explore how parts of a video game map look on a larger scale, as the in-game view is limited. I tested the process on different landscapes, including the 
+              “lane,” which contains mostly similar textures, and the “river,” which has intricate water details.</p>
+        </div>
+
+        <h3 class="subsection-heading">Real-Life Results</h3>
+        <div class="content">
+            <p>Here are my manually and automatically stitched results side by side.</p>
+            <img src="toy_pan.png" alt="Toy Panorama">
+        </div>
+
+        
+        <h3 class="subsection-heading">Game Results (Lane)</h3>
+        <div class="content">
+            <p>Here are my manually and automatically stitched results side by side.</p>
+             <img src="dotalr.png" alt="Dota">
+            <img src="dotapan.png" alt="Dota">
+        </div>
+
+        <h3 class="subsection-heading">Game Results (River)</h3>
+        <div class="content">
+            <p>Here are my manually and automatically stitched results side by side.</p>
+             <img src="riverlr.png" alt="River">
+            <img src="riverpan.png" alt="River">
+        </div>
+    </div>
+
             
 </body>
 </html>
