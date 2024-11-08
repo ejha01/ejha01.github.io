@@ -248,13 +248,11 @@
         <h2 class="section-heading">RANSAC</h2>
         <div class="content">
             <p>To eliminate false positives from the feature matching process, we apply RANSAC. In each iteration, a random set of 4 matches is selected to compute a homography. We then 
-                evaluate how well this homography aligns the remaining matches, counting the number of inliers it produces.</p> 
-            <p>The homography with the highest number of inliers is selected as the final result. While some true matches may be lost, most correct matches are retained, and all 
-                incorrect matches are removed, leading to more reliable stitching.</p>
+                evaluate how well this homography aligns the remaining matches, counting the number of inliers it produces. The homography with the highest number of inliers is selected 
+                as the final result. While some true matches may be lost, most correct matches are retained. Also, all incorrect matches are removed which leads to more reliable stitching.</p>
         </div>
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <p> Even though some mismatches remain, the majority of the matches are accurate and reliable.</p>
             <img src="ransac.png" alt="Toy Panorama">
         </div>
     </div>
