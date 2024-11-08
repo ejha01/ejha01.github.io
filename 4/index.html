@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <title>CS 180 Project 4 - Image Warping and Mosaicing by Eshani Jha</title>
     <style>
         body {
@@ -191,12 +192,12 @@
     <div>
         <h2 class="section-heading">Detecting Corner Features</h2>
         <div class="content">
-            <p>In Part A, I manually selected correspondence points to compute the homography matrix. Next, I automated this process using the Harris Corner Detector, 
-                which identifies interest points (corners) in an image. A corner is where two edges intersect, representing a significant change in brightness. Harris corners are 
-                invariant to translation, rotation, and illumination, making them reliable for feature detection.</p> 
-            <p>The detector calculates the structure tensor \(M\) using image derivatives in x and y directions. It scores each window using \(R = \det(M) - k(\text{trace}(M))^2\), 
-                where the eigenvalues of \(M\) determine whether the region contains a corner, edge, or flat area. I applied the Harris detector on both left and right images to extract 
-                corners.</p>
+           <p> In Part A, I manually selected correspondence points to compute the homography matrix. Later, I automated this process by implementing the Harris Corner Detector, 
+               which identifies interest points, or corners, within an image. A corner is a point where two edges meet, creating a significant change in brightness, and Harris corners 
+               are reliable for feature detection as they are invariant to translation, rotation, and illumination changes.</p>
+            <p> The detector calculates the structure tensor \( M \) using image derivatives in the x and y directions. Each window is scored using \( R = \det(M) - k(\text{trace}(M))^2 \),
+                where the eigenvalues of \( M \) determine if the region contains a corner, edge, or flat area. I applied the Harris detector to both the left and right images to extract 
+                key corner features automatically.</p>
         </div>
 
         <h3 class="subsection-heading">Results</h3>
@@ -265,7 +266,7 @@
               warped image with the target image. Finally, both images were stitched together within the mosaic by placing them at their computed positions in the combined frame.</p>
             <p>I applied this process to create a mosaic of stuffed animals (real-world example) and used blending techniques to eliminate sharp edges. I also experimented with Dota 2 
               screenshots to explore how parts of a video game map look on a larger scale, as the in-game view is limited. I tested the process on different landscapes, including the 
-              “lane,” which contains mostly similar textures, and the “river,” which has intricate water details.</p>
+              “lane,” which contains mostly similar textures, and the “trees,” which has intricate leaf details.</p>
         </div>
 
         <h3 class="subsection-heading">Real-Life Results</h3>
@@ -283,8 +284,9 @@
 
         <h3 class="subsection-heading">Game Results (Trees)</h3>
         <div class="content">
-            <p>Here are my manually and automatically stitched results side by side.</p>
-            <img src="compare_creep.png" alt="River">
+            <p>Here are my manually and automatically stitched results side by side. It appears that the automatic sticthing performed better. The shadow artifact visible at the bottom edge of the 
+                manually stitched image is not present in the automaically stitched image.</p>
+            <img src="compare_creep.png" alt="Tree">
         </div>
     </div>
 
