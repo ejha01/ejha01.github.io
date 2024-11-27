@@ -121,13 +121,7 @@
         <h2 class="section-heading">1.1 Implementing the Forward Process</h2>
         <div class="content">
         <p>To implement the forward process, we created a function to add noise to an image while adhering to DeepFloyd’s pre-trained model constraints: a non-linear noise 
-            schedule (defined by <code>alphas_cumprod</code>) and 1000 discrete training steps (t-values ranging from 0 to 999). Unlike traditional linear blending, the 
-            process blends a noisy image and a predicted clean image using a non-linear relationship: 
-        </p>
-        <pre>
-        (A_img * torch.sqrt(selector)) + ((1 - torch.sqrt(selector)) * B_img)
-        </pre>
-        <p>This scaling affects individual pixel values, not image size, and produces smoother noise transitions. Below are the results of the forward function at various noise levels 
+            schedule (defined by <code>alphas_cumprod</code>) and 1000 discrete training steps (t-values ranging from 0 to 999). Below are the results of the forward function at various noise levels 
             (<code>t = 250</code>, <code>t = 500</code>, <code>t = 750</code>).</p>
         </div>
         
