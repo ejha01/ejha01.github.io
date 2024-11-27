@@ -381,7 +381,7 @@ To deepen the network, composed operations like <em>ConvBlock</em>, <em>DownBloc
 </p>
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <img src="sec172_a.jpg" alt="Image 1" style="display: block; margin: 10px auto;">
+            <img src="b_1.png" alt="Image 1" style="display: block; margin: 10px auto;">
         </div>
     </div>
 
@@ -402,10 +402,48 @@ The objective was to train the UNet denoiser to restore clean images from noisy 
 I visualized the training process with a loss curve and evaluated denoised outputs after the 1st and 5th epochs. As expected, the results showed significant improvements after 5 epochs, with cleaner reconstructions of the noisy test digits.
 </p>
 
-<h3>1.2.2 Out-of-Distribution Testing</h3>
-<p>
-To test the denoiser's robustness, I evaluated its performance on out-of-distribution noise levels, varying the noise parameter \(\sigma\) beyond the range seen during training. The results revealed the model's limitations with high noise levels, as the reconstructions became increasingly distorted, while moderate noise levels still produced recognizable digits.
+                    <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="b_loss.png" alt="Image 1" style="display: block; margin: 10px auto;">
+            <img src="b_epoch1.png" alt="Image 1" style="display: block; margin: 10px auto;"> <p>
+First epoch.
 </p>
+            <img src="b_epoch2.png" alt="Image 1" style="display: block; margin: 10px auto;"> p>
+Fifth epoch.
+        </div>
+    </div>
+
+     <div>
+        <h2 class="section-heading">5B - Part 2: Training a Diffusion Model</h2>
+        <p>
+In this part, I adapted the U-Net to predict the noise added to an image rather than directly performing denoising. This shift enables iterative denoising, which is more effective than one-step methods. Additionally, I introduced time-conditioning by including the timestep of the diffusion process as input to the U-Net. This allows the model to adapt its predictions based on the current noise level during the iterative denoising process.
+</p>
+
+<h3>Training Process</h3>
+<p>
+To train the time-conditioned U-Net:
+</p>
+<ul>
+    <li>A batch of random images was selected, and noise was added using a random timestep (0 for no noise, 299 for pure noise).</li>
+    <li>The model predicted the noise added to the image.</li>
+    <li>The loss was computed as the difference between the predicted noise and the actual noise.</li>
+</ul>
+<p>
+This approach ensures the model is robust across all noise levels, making it capable of iteratively refining noisy inputs.
+</p>
+
+<h3>Sampling from the Model</h3>
+<p>
+To sample clean images, I used the iterative denoising algorithm starting with pure noise. Over multiple steps, the model gradually removed noise, reconstructing high-quality images. These results highlight the effectiveness of time-conditioned noise prediction in generating clean images from noisy inputs.
+</p>
+
+
+                    <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="b2_epoch1.png" alt="Image 1" style="display: block; margin: 10px auto;">
+            <img src="b2_epoch5.png" alt="Image 1" style="display: block; margin: 10px auto;"> <p>
+    </div>
+
             
 </body>
 </html>
