@@ -365,9 +365,7 @@
         <p>
 The first step in this project involved building a simple one-step denoiser. The objective is to train a UNet-based model to map a noisy image \(x_t\) to its clean counterpart \(x_0\) by minimizing an L2 loss:
 </p>
-<pre>
-\(\mathcal{L} = || f(x_t) - x_0 ||^2\)
-</pre>
+
 <p>
 The UNet architecture used here features downsampling and upsampling blocks with skip connections to retain spatial details during the denoising process. The primary operations include:
 </p>
@@ -394,7 +392,7 @@ To deepen the network, composed operations like <em>ConvBlock</em>, <em>DownBloc
 The objective was to train the UNet denoiser to restore clean images from noisy inputs, using the MNIST dataset. Each image batch was noised dynamically during training, ensuring the network saw new variations with every epoch for better generalization. Key training details include:
 </p>
 <ul>
-    <li><strong>Dataset:</strong> MNIST (training set only, shuffled)</li>
+    <li><strong>Dataset:</strong> MNIST </li>
     <li><strong>Batch Size:</strong> 256</li>
     <li><strong>Epochs:</strong> 5</li>
     <li><strong>Model:</strong> UNet with hidden dimension \(D = 128\)</li>
