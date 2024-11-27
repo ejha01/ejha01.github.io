@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <title>CS 180 Project 4 - Image Warping and Mosaicing by Eshani Jha</title>
+    <title>CS 180 Project 5 - Fun With Diffusion Models! by Eshani Jha</title>
     <style>
         body {
             font-family: 'Cambria', serif; /* Cambria font */
@@ -80,50 +80,49 @@
 <body>
 
     <div class="gradient-header">
-        <h1>CS 180 Project 4 - Image Warping and Mosaicing by Eshani Jha</h1>
+        <h1>CS 180 Project 5 - Fun With Diffusion Models! by Eshani Jha</h1>
     </div>
 
     <div>
         <h2 class="section-heading">Overview</h2>
         <div class="content">
-            <p>In this project, I took a look into the fascinating process of image mosaicing by warping and stitching multiple photographs into seamless 
-              mosaics. Using manually selected correspondence points, I also aligned images through homography transformations. This technique not only allows for the 
-              creation of captivating panoramas, but also demonstrates how projective warping can be applied to rectify images to fit alternate perspectives.</p>
+            <p>In this project, I will implement and deploy diffusion models for image generation, exploring their potential for creating high-quality, realistic visuals. The project is divided 
+                into two distinct parts, each with its own set of goals and deadlines (detailed below). This step-by-step approach will ensure a comprehensive understanding of diffusion-based 
+                generative modeling techniques.</p>
         </div>
     </div>
 
     <div>
-        <h2 class="section-heading">Shoot the Pictures</h2>
+        <h2 class="section-heading">Setup</h2>
         <div class="content">
-            <p>For this project, I used my Samsung Galaxy S22+ to capture high-quality photographs with fixed frame rates and consistent lighting conditions. To create variety, 
-              I also incorporated video game screenshots by manually panning across different sections of the in-game map with my mouse, capturing individual screenshots to later 
-              stitch into a cohesive mosaic. The goal was to ensure that the transformations between images are projective (i.e., perspective transformations). This is typically 
-              achieved by fixing the center of projection and rotating the camera during capture. I took care to follow these principles to ensure smooth image alignment and warping.</p>
+            <p> Using DeepFloyd's Stage 1 function, I generated images from text prompts, followed by applying Stage 2 for super-resolution to enhance the output quality. My 
+                selected seed was <code>180</code>, ensuring reproducibility across all experiments. The prompts I used were: 
+            </p>
+            <ul>
+                <li>"An oil painting of a snowy mountain village"</li>
+                <li>"A man wearing a hat"</li>
+                <li>"A rocket ship"</li>
+            </ul>
+            <p> To evaluate the effect of inference steps on image quality, I tested with 5, 20, and 50 steps. Unsurprisingly, 50 inference steps 
+                produced the best results, showcasing fine details and higher fidelity to the prompts. Among the outputs, the "rocket ship" prompt was the most creative, 
+                generating imaginative and visually striking results. While the model generally aligns well with the prompts, occasional discrepancies highlight its 
+                limitations, particularly for simpler or abstract concepts. </p>
         </div>
     </div>
 
     <div>
-        <h2 class="section-heading">Recover Homographies</h2>
+        <h2 class="section-heading">1.1 Implementing the Forward Process</h2>
         <div class="content">
-            <p>To align the images in the mosaic, I used the same correspondence tool from Project 3 to manually label matching features between each pair of images. This process 
-              generated two sets of corresponding points: <code>src_pts</code> for the source image and <code>dst_pts</code> for the target image. Using these points, I computed the homography matrix following the 
-              Singular Value Decomposition (SVD) approach, as outlined in the referenced paper. </p>
-            <p>For each pair of correspondence points <em>(x<sub>1</sub>, y<sub>1</sub>)</em> and <em>(x<sub>2</sub>, y<sub>2</sub>)</em>, two constraint vectors are created to 
-              form part of the system of equations:</p>
-
-            <pre>
-            Vector 1: [-x₁, -y₁, -1, 0, 0, 0, x₁ · x₂, y₁ · x₂, x₂]
-            Vector 2: [0, 0, 0, -x₁, -y₁, -1, x₁ · y₂, y₁ · y₂, y₂]
-            </pre>
-
-            <p> These vectors are derived by eliminating the scale factor <em>w'</em> in the target homogeneous coordinates, ensuring consistency across the transformation. 
-              The resulting vectors are stacked into a matrix <code>A</code>, which captures the relationship between the source and target points. Next, I passed matrix 
-              <code>A</code> through the SVD function <code>np.linalg.svd(A)</code>, obtaining the matrices <code>U</code>, <code>S</code>, and <code>V<sup>T</sup></code>. The row of 
-              <code>V<sup>T</sup></code> (or the column of <code>V</code>) corresponding to the smallest singular value gives the solution vector <code>v</code>. This vector contains 
-              the elements of the flattened homography matrix.</p>
-            <p>Finally, I reshaped <code>v</code> into a <code>3 × 3</code> matrix <code>H</code>. To ensure the homography matrix is properly scaled, I divided each element of 
-              <code>H</code> by the value in its bottom-right corner. This normalized matrix <code>H</code> provides the transformation needed to warp the source image into the 
-              perspective of the target image.</p>
+        <p>To implement the forward process, we created a function to add noise to an image while adhering to DeepFloyd’s pre-trained model constraints: a non-linear noise 
+            schedule (defined by <code>alphas_cumprod</code>) and 1000 discrete training steps (t-values ranging from 0 to 999). Unlike traditional linear blending, the 
+            process blends a noisy image and a predicted clean image using a non-linear relationship: 
+        </p>
+        <pre>
+        (A_img * torch.sqrt(selector)) + ((1 - torch.sqrt(selector)) * B_img)
+        </pre>
+        <p>This scaling affects individual pixel values, not image size, and produces smoother noise transitions. Notably, noise sampled as ∈ ~ N(0,1) 
+            represents a standard deviation of 1, with values typically in the range of -4 to 4. Below are the results of the forward function at various noise levels 
+            (<code>t = 250</code>, <code>t = 500</code>, <code>t = 750</code>).</p>
         </div>
         
         <div class="content">
@@ -132,25 +131,25 @@
     </div>
 
     <div>
-        <h2 class="section-heading">Warp the Images</h2>
+        <h2 class="section-heading">1.2 Classical Denonising</h2>
         <div class="content">
-                <p> To align images into a seamless mosaic, I implemented a custom warping function that leverages a homography matrix to map the source image into the target 
-                  perspective. The homography matrix transforms the corners of the source image, defining the new bounds and creating a pixel grid for the warped image. Using inverse 
-                  mapping, each pixel in the target image is then traced back to its corresponding location in the source image. At these locations, I applied bilinear interpolation 
-                  to compute smooth pixel values by blending the intensities of neighboring pixels. This ensures that the transitions between images are visually smooth and free of 
-                  harsh boundaries.
-              <p>
-                  The final warped images preserve spatial relationships and aligns accurately with the target image, setting the stage for blending multiple images into a unified mosaic.</p>        
+            <p>Before turning to advanced methods, we first explored classical denoising with Gaussian blur filters to remove noise from the images at timesteps 
+                <code>t = 250</code>, <code>t = 500</code>, and <code>t = 750</code>. While Gaussian filtering can reduce noise, it inevitably blurs finer details, making 
+                it insufficient for restoring the original image quality. By manually tuning kernel sizes and sigma values, we attempted to strike a balance between noise 
+                reduction and detail preservation, but the results were limited.</p>
+            <p>To counteract the loss of detail, we applied sharpening filters (as explored in Project 2) by subtracting one Gaussian level from another and 
+                adding the sharpness back to the original image. However, this could not recover lost information, underscoring the limitations of classical approaches in 
+                handling such noise. Creative digital techniques will be explored further in the next section.</p>
 
     <div>
-        <h2 class="section-heading">Image Rectification</h2>
+        <h2 class="section-heading">1.3 Diffusion One-Step Denoising</h2>
         <div class="content">
-            <p>As part of testing the homography and warping functions, I performed image rectification on objects with known shapes. This process ensures that the code works 
-              correctly by transforming tilted or distorted objects back into their proper rectangular form. I captured images with objects such as my laptop screen and LED remote at an 
-              angle and used the homography transformation to "flatten" their appearance. 
-          <p>Interestingly, when rectifying the remote control, the transformation not only corrected the perspective but also revealed finer details that were initially hard to see. 
-            Surprisingly, symbols like the <em>AUTO</em> button and the <em>W</em> symbol (for white light) became clearly visible after rectification. This demonstrates the power of 
-            perspective correction in uncovering subtle features within an image.</p>
+            <p>In this section, we used a pretrained diffusion model to perform one-step denoising, leveraging a UNet trained on a massive dataset of image pairs \((x_0, x_t)\). 
+                The model estimates the noise in a noisy image conditioned on a text prompt embedding (e.g., "a high quality photo") and timestep \(t\). By scaling and removing 
+                the predicted noise, we can approximate the original clean image.</p>
+            <p>Results for timesteps \(t = 250\), \(t = 500\), and \(t = 750\) show that the model performs well for low-noise images but struggles with higher noise 
+                levels, resulting in blurrier outputs. While single-shot denoising is effective, its limitations highlight the need for iterative noise reduction, which we will 
+                explore in the next section.</p>
         </div>
 
         <h3 class="subsection-heading">Results</h3>
@@ -161,13 +160,14 @@
     </div>
 
     <div>
-        <h2 class="section-heading">Blending into a Mosaic</h2>
+        <h2 class="section-heading">1.4 Iterative Diffusion Denoising</h2>
         <div class="content">
-            <p>First, I computed a homography matrix to warp one image onto the plane of another. Then, I calculated the bounding box and necessary shifts to align the 
-              warped image with the target image. Finally, both images were stitched together within the mosaic by placing them at their computed positions in the combined frame.</p>
-            <p>I applied this process to create a mosaic of stuffed animals (real-world example) and used blending techniques to eliminate sharp edges. I also experimented with Dota 2 
-              screenshots to explore how parts of a video game map look on a larger scale, as the in-game view is limited. I tested the process on different landscapes, including the 
-              “lane,” which contains mostly similar textures, and the “trees,” which have intricate leaf details.</p>
+            <p>In this section, I implemented iterative diffusion denoising, breaking the process into multiple steps to progressively refine the image. Unlike the single-step 
+                approach, iterative denoising encourages the model to focus on coarse-to-fine details, restoring more intricate features over time. For example, the foliage in 
+                the background of the Campanile image showed significantly improved definition compared to other methods.</p>
+            <p>I compared three approaches: iterative diffusion, single-step diffusion, and Gaussian blur denoising. The iterative approach consistently outperformed the others, 
+                producing sharper and more detailed results. Given that noise removes information, the iterative process “hallucinates” lost details, sometimes adding creative 
+                interpretations to the image. The results demonstrate the power of diffusion models when combined with incremental refinement.</p>
         </div>
 
         <h3 class="subsection-heading">Real-Life Results</h3>
@@ -175,29 +175,15 @@
             <img src="toy_pan.png" alt="Toy Panorama">
         </div>
 
-        
-        <h3 class="subsection-heading">Game Results (Lane)</h3>
-        <div class="content">
-             <img src="dotalr.png" alt="Dota">
-            <img src="dotapan.png" alt="Dota">
-        </div>
-
-        <h3 class="subsection-heading">Game Results (Trees)</h3>
-        <div class="content">
-             <img src="tree_lr.png" alt="Tree">
-            <img src="tree_pan.png" alt="Tree">
-        </div>
-    </div>
 
     <div>
-        <h2 class="section-heading">Detecting Corner Features</h2>
+        <h2 class="section-heading">1.5 Diffusion Model Sampling</h2>
         <div class="content">
-           <p> In Part A, I manually selected correspondence points to compute the homography matrix. Later, I automated this process by implementing the Harris Corner Detector, 
-               which identifies interest points, or corners, within an image. A corner is a point where two edges meet, creating a significant change in brightness, and Harris corners 
-               are reliable for feature detection as they are invariant to translation, rotation, and illumination changes.</p>
-            <p> The detector calculates the structure tensor \( M \) using image derivatives in the x and y directions. Each window is scored using \( R = \det(M) - k(\text{trace}(M))^2 \),
-                where the eigenvalues of \( M \) determine if the region contains a corner, edge, or flat area. I applied the Harris detector to both the left and right images to extract 
-                key corner features automatically.</p>
+           <p>In this section, I used the diffusion model to generate images from pure noise, effectively “hallucinating” visuals from scratch. By setting <code>i_start = 0</code> 
+               and initializing with random noise, the iterative denoising process refined the noise into recognizable images. The results demonstrate how diffusion models can 
+               synthesize images purely from the latent manifold of the dataset.</p>
+            <p>I observed that lower strides (more iterative steps) produced richer, more detailed images, while higher strides often resulted in incomplete outputs, such as solid 
+                black or purple images. All generated samples were enhanced using super-resolution. Below are five examples of "a high quality photo" created through this process.</p>
         </div>
 
         <h3 class="subsection-heading">Results</h3>
@@ -205,37 +191,40 @@
             <img src="harris_toy.png" alt="Toy Panorama">
         </div>
 
-        <h3 class="subsection-heading">Adaptive Non-Maximal Suppression (ANMS)</h3>
+        <h3 class="subsection-heading">1.6 Classifier-Free Guidance (CFG)</h3>
         <div class="content">
-            <p>While the Harris Corner Detector identifies many potential feature points, it often produces too many. To address this, Adaptive Non-Maximal Suppression (ANMS) filters the 
-                points by distributing them evenly across the image, keeping only the strongest features. ANMS calculates a suppression radius for each point defined as the smallest 
-                distance to a significantly stronger point using a robustness parameter \(c = 0.9\).</p> 
-            <p>The algorithm works by computing the Euclidean distance and strength differences between each point and others. Points with non-positive strength differences are 
-                discarded. The nearest valid distance is stored in a min-heap, which maintains the largest suppression radii. While ANMS may not return the points with the highest 
-                strengths, it ensures that the selected features are spatially well-distributed, providing strong, dominant points across the image. The final set of Harris points is 
-                shown below.</p>
+            <p>To enhance the controllability and quality of image generation, I implemented Classifier-Free Guidance (CFG). This technique allows us to adjust the influence of the 
+                text prompt on the generated image by blending conditional and unconditional noise estimates. By scaling the difference between these estimates with a CFG scale, 
+                we can balance fidelity to the prompt against image diversity.</p>
+            <p>The most exciting aspect of CFG is the ability to push beyond the dataset's original manifold by using high CFG values, producing creative and otherworldly results. 
+                For example, at a CFG scale of 7, the generated images take on surreal and imaginative qualities. Below are five examples generated with CFG scales of 2 and 7, 
+                demonstrating the enhanced control and creativity unlocked by this approach.</p>
             <img src="anms_toy.png" alt="Toy Panorama">
         </div>
     </div>
 
     <div>
-        <h2 class="section-heading">Extracting Feature Descriptors</h2>
+        <h2 class="section-heading">1.7 Image-to-Image Translation</h2>
         <div class="content">
-            <p>With a reduced set of Harris points, the next step is to match points between images using feature descriptors. Each descriptor is created by extracting a 40x40 window 
-                centered on a Harris point. This patch captures a 20-pixel radius around the point in all directions. To generate a smooth, blurred descriptor, the patch is downsampled to 
-                8x8 pixels instead of extracting a smaller patch directly.</p> 
-            <p>The descriptors are then normalized to have a mean of 0 and a standard deviation of 1, making them robust to affine changes in intensity (e.g. bias and gain). These 
-                normalized feature descriptors allow consistent and reliable matching between images.</p>
+            <p>In this section, I applied the SDEdit algorithm to perform image-to-image translation, using the denoising process of diffusion models to make creative edits to 
+                existing images. Starting with a noisy version of the test image, I iteratively denoised it at different noise levels (<code>i_start = [1, 3, 5, 7, 10, 20]</code>) 
+                with the text prompt "a high quality photo." The results show progressively more refined edits, with lower noise levels retaining more original features and 
+                higher noise levels producing larger transformations.</p>
+            <p>In addition to the test image, I experimented with two of my own images: a beach scene and a skyscraper. Using the same procedure, I observed similar patterns of 
+                transformation, where the model gradually blended creative details into the original images. The flexibility of this approach highlights the potential of diffusion 
+                models for controlled and imaginative edits.</p>
         </div>
     </div>
 
     <div>
-        <h2 class="section-heading">Matching Feature Descriptors</h2>
+        <h2 class="section-heading">1.7.1 Editing Hand-Drawn and Web Images</h2>
         <div class="content">
-            <p>To match feature descriptors, we compare all descriptor pairs between the two images using Sum of Squared Differences (SSD) or Nearest-Neighbor (NN) scores, where lower 
-                scores indicate better matches. We first narrow the candidates by selecting each feature’s nearest neighbor. Next, we calculate the ratio between the 
-                nearest-neighbor score and the second-nearest-neighbor score. If this ratio is below a chosen threshold (0.4 worked well in my testing), we accept the match. The resulting 
-                matches are visualized with randomly colored points to highlight correspondences between the images.</p>
+            <p>This section explores how diffusion models can project non-realistic images, such as hand-drawn sketches or web-sourced illustrations, onto the natural image 
+                manifold. Using the same iterative denoising process as before, I experimented with a downloaded image of an octopus and two hand-drawn sketches: a flower and a 
+                house. Noise levels of <code>i_start = [1, 3, 5, 7, 10, 20]</code> were applied to observe the gradual transformation from noisy inputs to refined outputs.</p>
+            <p>For the octopus image, the model successfully enhanced realism with each step, adding textures and lifelike details. The hand-drawn flower and house images 
+                showed varying levels of success, with the flower achieving a more natural appearance, while the house introduced creative interpretations. These results 
+                highlight the versatility of diffusion models in transforming non-realistic inputs into more polished outputs.</p>
         </div>
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
@@ -245,11 +234,16 @@
     </div>
 
     <div>
-        <h2 class="section-heading">RANSAC</h2>
+        <h2 class="section-heading">1.7.2 Inpainting</h2>
         <div class="content">
-            <p>To eliminate false positives from the feature matching process, we apply RANSAC. In each iteration, a random set of 4 matches is selected to compute a homography. We then 
-                evaluate how well this homography aligns the remaining matches, counting the number of inliers it produces. The homography with the highest number of inliers is selected 
-                as the final result. While some true matches may be lost, most correct matches are retained. Also, all incorrect matches are removed which leads to more reliable stitching.</p>
+            <h2>1.7.2 Inpainting</h2>
+                <p>In this section, I explored the powerful inpainting capabilities of diffusion models, where missing or masked areas of an image are seamlessly filled based on 
+                    the surrounding context. Using a mask, the model selectively preserves unmasked areas while iteratively hallucinating new content in the masked regions, 
+                    effectively integrating them into the original image.</p>
+                <p>I applied inpainting to three images: the Campanile, a beach scene, and the Manhattan skyline. For the Campanile, I masked the top portion of the tower, and 
+                    the model successfully reconstructed it while blending it naturally with the existing structure. In the beach and Manhattan skyline images, the inpainting 
+                    process creatively restored missing areas, producing results that aligned convincingly with the original content. These experiments highlight the 
+                    versatility and robustness of diffusion-based inpainting.</p>
         </div>
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
@@ -258,13 +252,16 @@
     </div>
 
      <div>
-        <h2 class="section-heading">Blending into a Mosaic</h2>
+        <h2 class="section-heading">1.7.3 Text-Conditional Image-to-Image Translation</h2>
         <div class="content">
-            <p>I used the same techniques as Part A. First, I computed a homography matrix to warp one image onto the plane of another. Then, I calculated the bounding box and necessary shifts to align the 
-              warped image with the target image. Finally, both images were stitched together within the mosaic by placing them at their computed positions in the combined frame.</p>
-            <p>I applied this process to create a mosaic of stuffed animals (real-world example) and used blending techniques to eliminate sharp edges. I also experimented with Dota 2 
-              screenshots to explore how parts of a video game map look on a larger scale, as the in-game view is limited. I tested the process on different landscapes, including the 
-              “lane,” which contains mostly similar textures, and the “trees,” which has intricate leaf details.</p>
+            <p>In this section, I explored text-conditional image-to-image translation, combining the structure of an input image with the creativity of a text prompt. 
+                By varying noise levels (<code>i_start = [1, 3, 5, 7, 10, 20]</code>), the model interpolates between the input image and the text prompt, blending features 
+                from both. Higher noise levels allow the model to move closer to the text prompt's "location" in the latent space, while lower noise levels retain more of the 
+                original image.</p>
+            <p>I experimented with three combinations: the Campanile paired with the prompt "a rocket ship," a beach scene paired with "a pencil," and the Manhattan skyline 
+                paired with "a photo of a dog." The results show creative transformations, with the Campanile gradually morphing into a futuristic rocket ship, the beach taking on artistic 
+                pencil-like textures, and the skyline blending cat-like features into its structure. These experiments highlight the versatility and control offered by 
+                text-conditional diffusion models.</p>
         </div>
 
         <h3 class="subsection-heading">Real-Life Results</h3>
@@ -272,31 +269,57 @@
             <p>Below are my manually and automatically stitched results side by side. They both appear to be similar.</p>
             <img src="compare_toy.png" alt="Toy Panorama">
         </div>
+    </div>
 
-        
-        <h3 class="subsection-heading">Game Results (Lane)</h3>
+    <div>
+        <h2 class="section-heading">1.8 Visual Anagrams</h2>
+        <div class="content">
+            <p>In this section, I created visual anagrams—images that appear as one subject when viewed normally and transform into another subject when flipped upside down. 
+                Using diffusion models, I combined two prompts by denoising the image with one prompt, flipping the image, denoising it with the second prompt, 
+                and averaging the two noise estimates. This process generates a single image that reveals two distinct interpretations based on orientation.</p>
+            <p>I experimented with three visual anagrams: 
+            <ul>
+                <li><strong>Prompt 1:</strong> "An oil painting of an old man" and <strong>Prompt 2:</strong> "An oil painting of people around a campfire"</li>
+                <li><strong>Prompt 1:</strong> "A photo of a hipster barista" and <strong>Prompt 2:</strong> "A rocket ship"</li>
+                <li><strong>Prompt 1:</strong> "An oil painting of a snowy mountain village" and <strong>Prompt 2:</strong> "A lithograph of a skull"</li>
+            </ul>
+            The results were striking, with each image seamlessly transitioning between the two prompts when flipped, showcasing the creative potential of diffusion models 
+            for optical illusions.
+        </p>
+        </div>
+
+        <h3 class="subsection-heading">Real-Life Results</h3>
         <div class="content">
             <p>Below are my manually and automatically stitched results side by side. They both appear to be similar.</p>
-             <img src="comparee_lane.png" alt="Dota">
-        </div>
-
-        <h3 class="subsection-heading">Game Results (Trees)</h3>
-        <div class="content">
-            <p>Below are my manually and automatically stitched results side by side. The automatic stitching noticeably outperformed the manual approach, as evidenced by the absence of a shadow artifact along the 
-                bottom edge in the automatically stitched image (around 650 on the horizontal axis). This comparison highlights the precision and effectiveness of the automated process.</p>
-            <img src="compare_creep.png" alt="Tree">
+            <img src="compare_toy.png" alt="Toy Panorama">
         </div>
     </div>
 
-        <div>
-        <h2 class="section-heading">What I learned</h2>
+     <div>
+        <h2 class="section-heading">1.9 Hybrid Images</h2>
         <div class="content">
-            <p> The most mind-blowing part of this project has been discovering the power of feature matching based solely on pixel intensities. I had always assumed that recognizing 
-                similar points across images required a neural network or some form of “smart” AI to make sense of it all. But seeing how pixel intensities alone can accurately pinpoint 
-                matching features between images was eye-opening! It felt like unlocking a new layer of understanding in computer vision—realizing that the simplest data can sometimes 
-                yield the most precise results. </p>
+            <p>In this section, I implemented Factorized Diffusion to create hybrid images that combine two distinct subjects by blending their frequency components. The 
+                process involves generating two noise estimates using different text prompts, applying low-pass and high-pass filters to separate their frequency components, 
+                and combining the low frequencies from one with the high frequencies from the other. This technique results in images that appear as one subject from afar but 
+                transform into another up close.</p>
+            <p> I created three hybrid images using this method:
+                    <ul>
+                        <li><strong>Hybrid 1:</strong> "A lithograph of a skull" (low frequencies) and "A lithograph of waterfalls" (high frequencies)</li>
+                        <li><strong>Hybrid 2:</strong> "A lithograph of waterfalls" (low frequencies) and "An oil painting of people around a campfire" (high frequencies)</li>
+                        <li><strong>Hybrid 3:</strong> "A lithograph of a skull" (low frequencies) and "A photo of a man" (high frequencies)</li>
+            </ul>
+            The results showcase seamless blending, with each hybrid image transitioning between two distinct interpretations depending on viewing distance. This experiment 
+            highlights the versatility of diffusion models in creating visually compelling and conceptually rich outputs.
+            </p>
+        </div>
+
+        <h3 class="subsection-heading">Real-Life Results</h3>
+        <div class="content">
+            <p>Below are my manually and automatically stitched results side by side. They both appear to be similar.</p>
+            <img src="compare_toy.png" alt="Toy Panorama">
         </div>
     </div>
+
 
             
 </body>
