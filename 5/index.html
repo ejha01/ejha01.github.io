@@ -196,7 +196,7 @@
             <img src="sec15_a.png" alt="Toy Panorama">
         </div>
 
-        <h3 class="subsection-heading">1.6 Classifier-Free Guidance (CFG)</h3>
+        <h3 class="section-heading">1.6 Classifier-Free Guidance (CFG)</h3>
         <div class="content">
             <p>To enhance the controllability and quality of image generation, I implemented Classifier-Free Guidance (CFG). This technique allows us to adjust the influence of the 
                 text prompt on the generated image by blending conditional and unconditional noise estimates. By scaling the difference between these estimates with a CFG scale, 
@@ -360,6 +360,54 @@
     </div>
 
 
+        <div>
+        <h2 class="section-heading">5B - Part 1: Training a Single-Step Denoising U-Net</h2>
+        <p>
+The first step in this project involved building a simple one-step denoiser. The objective is to train a UNet-based model to map a noisy image \(x_t\) to its clean counterpart \(x_0\) by minimizing an L2 loss:
+</p>
+<pre>
+\(\mathcal{L} = || f(x_t) - x_0 ||^2\)
+</pre>
+<p>
+The UNet architecture used here features downsampling and upsampling blocks with skip connections to retain spatial details during the denoising process. The primary operations include:
+</p>
+<ul>
+    <li><strong>Conv2d:</strong> Convolutional layers for adjusting channel dimensions without altering spatial resolution.</li>
+    <li><strong>DownConv:</strong> Convolutional layers that reduce tensor dimensions by a factor of 2.</li>
+    <li><strong>UpConv:</strong> Transpose convolutional layers that upsample tensor dimensions by a factor of 2.</li>
+    <li><strong>Flatten:</strong> Average pooling layers that compress tensors into 1x1 dimensions.</li>
+    <li><strong>Concat:</strong> Channel-wise concatenation using skip connections to merge information across resolutions.</li>
+</ul>
+<p>
+To deepen the network, composed operations like <em>ConvBlock</em>, <em>DownBlock</em>, and <em>UpBlock</em> were used. These include additional learnable parameters for enhanced performance while maintaining input-output shape consistency. This UNet serves as the foundation for our single-step denoising tasks.
+</p>
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="sec172_a.jpg" alt="Image 1" style="display: block; margin: 10px auto;">
+        </div>
+    </div>
+
+
+        <div>
+        <h2 class="section-heading">1.2 Using the UNet to Train a Denoiser</h2>
+<p>
+The objective was to train the UNet denoiser to restore clean images from noisy inputs, using the MNIST dataset. Each image batch was noised dynamically during training, ensuring the network saw new variations with every epoch for better generalization. Key training details include:
+</p>
+<ul>
+    <li><strong>Dataset:</strong> MNIST (training set only, shuffled)</li>
+    <li><strong>Batch Size:</strong> 256</li>
+    <li><strong>Epochs:</strong> 5</li>
+    <li><strong>Model:</strong> UNet with hidden dimension \(D = 128\)</li>
+    <li><strong>Optimizer:</strong> Adam with learning rate \(1 \times 10^{-4}\)</li>
+</ul>
+<p>
+I visualized the training process with a loss curve and evaluated denoised outputs after the 1st and 5th epochs. As expected, the results showed significant improvements after 5 epochs, with cleaner reconstructions of the noisy test digits.
+</p>
+
+<h3>1.2.2 Out-of-Distribution Testing</h3>
+<p>
+To test the denoiser's robustness, I evaluated its performance on out-of-distribution noise levels, varying the noise parameter \(\sigma\) beyond the range seen during training. The results revealed the model's limitations with high noise levels, as the reconstructions became increasingly distorted, while moderate noise levels still produced recognizable digits.
+</p>
             
 </body>
 </html>
