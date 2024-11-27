@@ -89,7 +89,7 @@
             <p>In this project, I will implement and deploy diffusion models for image generation, exploring their potential for creating high-quality, realistic visuals. The project is divided 
                 into two distinct parts, each with its own set of goals and deadlines (detailed below). This step-by-step approach will ensure a comprehensive understanding of diffusion-based 
                 generative modeling techniques.</p>
-        </div>
+        </div>        
     </div>
 
     <div>
@@ -108,6 +108,13 @@
                 generating imaginative and visually striking results. While the model generally aligns well with the prompts, occasional discrepancies highlight its 
                 limitations, particularly for simpler or abstract concepts. </p>
         </div>
+
+        <div class="content">
+            <img src="sec1_a.jpg" alt="Image 1" style="display: block; margin: 10px auto;">
+            <img src="sec1_b.jpg" alt="Image 2" style="display: block; margin: 10px auto;">
+            <img src="sec1_c.jpg" alt="Image 3" style="display: block; margin: 10px auto;">
+    </div>
+        
     </div>
 
     <div>
@@ -120,13 +127,12 @@
         <pre>
         (A_img * torch.sqrt(selector)) + ((1 - torch.sqrt(selector)) * B_img)
         </pre>
-        <p>This scaling affects individual pixel values, not image size, and produces smoother noise transitions. Notably, noise sampled as ∈ ~ N(0,1) 
-            represents a standard deviation of 1, with values typically in the range of -4 to 4. Below are the results of the forward function at various noise levels 
+        <p>This scaling affects individual pixel values, not image size, and produces smoother noise transitions. Below are the results of the forward function at various noise levels 
             (<code>t = 250</code>, <code>t = 500</code>, <code>t = 750</code>).</p>
         </div>
         
         <div class="content">
-            <img src="toypoints.png" alt="Points">
+            <img src="sec11_a.jpg" alt="Points">
         </div>
     </div>
 
@@ -140,6 +146,10 @@
             <p>To counteract the loss of detail, we applied sharpening filters (as explored in Project 2) by subtracting one Gaussian level from another and 
                 adding the sharpness back to the original image. However, this could not recover lost information, underscoring the limitations of classical approaches in 
                 handling such noise. Creative digital techniques will be explored further in the next section.</p>
+        </div>
+        <div class="content">
+            <img src="sec12_a.png" alt="noise">
+    </div>
 
     <div>
         <h2 class="section-heading">1.3 Diffusion One-Step Denoising</h2>
@@ -147,15 +157,16 @@
             <p>In this section, we used a pretrained diffusion model to perform one-step denoising, leveraging a UNet trained on a massive dataset of image pairs \((x_0, x_t)\). 
                 The model estimates the noise in a noisy image conditioned on a text prompt embedding (e.g., "a high quality photo") and timestep \(t\). By scaling and removing 
                 the predicted noise, we can approximate the original clean image.</p>
-            <p>Results for timesteps \(t = 250\), \(t = 500\), and \(t = 750\) show that the model performs well for low-noise images but struggles with higher noise 
+            <p>Results for timesteps  <code>t = 250</code>, <code>t = 500</code>, and <code>t = 750</code> show that the model performs well for low-noise images but struggles with higher noise 
                 levels, resulting in blurrier outputs. While single-shot denoising is effective, its limitations highlight the need for iterative noise reduction, which we will 
                 explore in the next section.</p>
         </div>
 
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <img src="rectify_1.png" alt="Laptop">
-            <img src="rectify_2.png" alt="Remote">
+            <img src="sec13_a.png" alt="Image 1" style="display: block; margin: 10px auto;">
+            <img src="sec13_b.png" alt="Image 2" style="display: block; margin: 10px auto;">
+            <img src="sec13_c.png" alt="Image 3" style="display: block; margin: 10px auto;">
         </div>
     </div>
 
@@ -172,7 +183,7 @@
 
         <h3 class="subsection-heading">Real-Life Results</h3>
         <div class="content">
-            <img src="toy_pan.png" alt="Toy Panorama">
+            <img src="sec14_a.png" alt="Toy Panorama">
         </div>
 
 
@@ -188,7 +199,7 @@
 
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <img src="harris_toy.png" alt="Toy Panorama">
+            <img src="sec15_a.png" alt="Toy Panorama">
         </div>
 
         <h3 class="subsection-heading">1.6 Classifier-Free Guidance (CFG)</h3>
@@ -199,8 +210,12 @@
             <p>The most exciting aspect of CFG is the ability to push beyond the dataset's original manifold by using high CFG values, producing creative and otherworldly results. 
                 For example, at a CFG scale of 7, the generated images take on surreal and imaginative qualities. Below are five examples generated with CFG scales of 2 and 7, 
                 demonstrating the enhanced control and creativity unlocked by this approach.</p>
-            <img src="anms_toy.png" alt="Toy Panorama">
+        
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="sec16_a.png" alt="Toy Panorama">
         </div>
+
     </div>
 
     <div>
@@ -216,6 +231,14 @@
         </div>
     </div>
 
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content">
+            <img src="sec17_a.png" alt="Image 1" style="display: block; margin: 10px auto;">
+            <img src="sec17_b.png" alt="Image 2" style="display: block; margin: 10px auto;">
+            <img src="sec17_c.png" alt="Image 3" style="display: block; margin: 10px auto;">
+        </div>
+    </div>
+
     <div>
         <h2 class="section-heading">1.7.1 Editing Hand-Drawn and Web Images</h2>
         <div class="content">
@@ -226,11 +249,14 @@
                 showed varying levels of success, with the flower achieving a more natural appearance, while the house introduced creative interpretations. These results 
                 highlight the versatility of diffusion models in transforming non-realistic inputs into more polished outputs.</p>
         </div>
+        
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <p> Even though some mismatches remain, the majority of the matches are accurate and reliable.</p>
-            <img src="matches.png" alt="Toy Panorama">
+            <img src="sec171_a.jpg" alt="Image 1" style="display: block; margin: 10px auto;">
+            <img src="sec171_b.jpg" alt="Image 2" style="display: block; margin: 10px auto;">
+            <img src="sec171_c.jpg" alt="Image 3" style="display: block; margin: 10px auto;">
         </div>
+    </div>
     </div>
 
     <div>
@@ -247,7 +273,10 @@
         </div>
         <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <img src="ransac.png" alt="Toy Panorama">
+            <img src="sec172_a.jpg" alt="Image 1" style="display: block; margin: 10px auto;">
+            <img src="sec172_b.png" alt="Image 2" style="display: block; margin: 10px auto;">
+            <img src="sec172_c.png" alt="Image 3" style="display: block; margin: 10px auto;">
+            <img src="sec172_d.png" alt="Image 4" style="display: block; margin: 10px auto;">
         </div>
     </div>
 
@@ -264,10 +293,11 @@
                 text-conditional diffusion models.</p>
         </div>
 
-        <h3 class="subsection-heading">Real-Life Results</h3>
+        <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <p>Below are my manually and automatically stitched results side by side. They both appear to be similar.</p>
-            <img src="compare_toy.png" alt="Toy Panorama">
+            <img src="sec173_a.jpg" alt="Image 1" style="display: block; margin: 10px auto;">
+            <img src="sec173_b.png" alt="Image 2" style="display: block; margin: 10px auto;">
+            <img src="sec173_c.png" alt="Image 3" style="display: block; margin: 10px auto;">
         </div>
     </div>
 
@@ -288,11 +318,25 @@
         </p>
         </div>
 
-        <h3 class="subsection-heading">Real-Life Results</h3>
-        <div class="content">
-            <p>Below are my manually and automatically stitched results side by side. They both appear to be similar.</p>
-            <img src="compare_toy.png" alt="Toy Panorama">
-        </div>
+        <h3 class="subsection-heading">Results</h3>
+        <div class="content" style="display: flex; flex-direction: column; gap: 20px;">
+    <!-- Row 1 -->
+    <div style="display: flex; justify-content: center; gap: 20px;">
+        <img src="sec18_a1.png" alt="Image 1 Row 1" style="width: 45%;">
+        <img src="sec18_a2.png" alt="Image 2 Row 1" style="width: 45%;">
+    </div>
+    <!-- Row 2 -->
+    <div style="display: flex; justify-content: center; gap: 20px;">
+        <img src="sec18_b1.png" alt="Image 1 Row 2" style="width: 45%;">
+        <img src="sec18_b2.png" alt="Image 2 Row 2" style="width: 45%;">
+    </div>
+    <!-- Row 3 -->
+    <div style="display: flex; justify-content: center; gap: 20px;">
+        <img src="sec18_c1.png" alt="Image 1 Row 3" style="width: 45%;">
+        <img src="sec18_c2.png" alt="Image 2 Row 3" style="width: 45%;">
+    </div>
+</div>
+
     </div>
 
      <div>
@@ -313,11 +357,13 @@
             </p>
         </div>
 
-        <h3 class="subsection-heading">Real-Life Results</h3>
+        <h3 class="subsection-heading">Results</h3>
         <div class="content">
-            <p>Below are my manually and automatically stitched results side by side. They both appear to be similar.</p>
-            <img src="compare_toy.png" alt="Toy Panorama">
+            <img src="sec_19a.jpg" alt="Image 1" style="display: block; margin: 10px auto;">
+            <img src="sec_19b.jpg" alt="Image 2" style="display: block; margin: 10px auto;">
+            <img src="sec_19c.jpg" alt="Image 3" style="display: block; margin: 10px auto;">
         </div>
+    </div>
     </div>
 
 
