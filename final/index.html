@@ -261,8 +261,38 @@
 
     <h3>Reconstruction</h3>
     <p>
-        The final step was reconstructing the video by collapsing the Laplacian pyramid back into full-resolution frames. The magnified signals became visible in the final output videos. The original input videos are diplayed below.
+        The final step was reconstructing the video by collapsing the Laplacian pyramid back into full-resolution frames. 
+        The magnified signals became visible in the final output videos. The original input videos are diplayed below.
     </p>
+
+<div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap;">
+  <!-- Video 1 -->
+  <div style="margin: 10px; text-align: center;">
+    <video width="320" height="240" controls>
+      <source src="face.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <p>Video 1 Description</p>
+  </div>
+
+  <!-- Video 2 -->
+  <div style="margin: 10px; text-align: center;">
+    <video width="320" height="240" controls>
+      <source src="baby2.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <p>Video 2 Description</p>
+  </div>
+
+  <!-- Video 3 -->
+  <div style="margin: 10px; text-align: center;">
+    <video width="320" height="240" controls>
+      <source src="hand.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <p>Video 3 Description</p>
+  </div>
+</div>
 
             
 </div>
@@ -273,20 +303,20 @@
     <p>
       Frequencies between 0.83–1.0 Hz were amplified to reveal blood flow. The t_start and t_end parameters were set to 85 and 245. Below is the resulting video:
     </p>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/your_face_video_id" frameborder="0" allowfullscreen></iframe>
+    <iframe width="560" height="315" src="outvid1.gif" frameborder="0" allowfullscreen></iframe>
 
     <h3>2. baby2.mp4</h3>
     <p>
       Frequencies between 2.33–2.67 Hz were targeted to amplify pulsations. The t_start and t_end parameters were set to 23 and 253. Here is the result:
     </p>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/your_baby2_video_id" frameborder="0" allowfullscreen></iframe>
+    <iframe width="560" height="315" src="outvid2.gif" frameborder="0" allowfullscreen></iframe>
 
     <h3>3. myhand.mp4</h3>
     <p>
       For my custom video I captured the video used with my phone, and then used an online video compression tool to shrink the file size. 
         Frequencies between 0.6–1.2 Hz were amplified to highlight my blood flow. The t_start and t_end parameters were also set to 23 and 253:
     </p>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/your_myhand_video_id" frameborder="0" allowfullscreen></iframe>
+    <iframe width="560" height="315" src="outvid3.gif" frameborder="0" allowfullscreen></iframe>
   </div>
 
   <div class="section">
