@@ -213,112 +213,99 @@
     </div>
       
     <div>
-        <h2 class="section-heading">Detecting Corner Features</h2>
+        <h2 class="section-heading">Overview</h2>
         <div class="content">
-           <p> In Part A, I manually selected correspondence points to compute the homography matrix. Later, I automated this process by implementing the Harris Corner Detector, 
-               which identifies interest points, or corners, within an image. A corner is a point where two edges meet, creating a significant change in brightness, and Harris corners 
-               are reliable for feature detection as they are invariant to translation, rotation, and illumination changes.</p>
-            <p> The detector calculates the structure tensor \( M \) using image derivatives in the x and y directions. Each window is scored using \( R = \det(M) - k(\text{trace}(M))^2 \),
-                where the eigenvalues of \( M \) determine if the region contains a corner, edge, or flat area. I applied the Harris detector to both the left and right images to extract 
-                key corner features automatically.</p>
-        </div>
-
-        <h3 class="subsection-heading">Results</h3>
-        <div class="content">
-            <img src="harris_toy.png" alt="Toy Panorama">
-        </div>
-
-        <h3 class="subsection-heading">Adaptive Non-Maximal Suppression (ANMS)</h3>
-        <div class="content">
-            <p>While the Harris Corner Detector identifies many potential feature points, it often produces too many. To address this, Adaptive Non-Maximal Suppression (ANMS) filters the 
-                points by distributing them evenly across the image, keeping only the strongest features. ANMS calculates a suppression radius for each point defined as the smallest 
-                distance to a significantly stronger point using a robustness parameter \(c = 0.9\).</p> 
-            <p>The algorithm works by computing the Euclidean distance and strength differences between each point and others. Points with non-positive strength differences are 
-                discarded. The nearest valid distance is stored in a min-heap, which maintains the largest suppression radii. While ANMS may not return the points with the highest 
-                strengths, it ensures that the selected features are spatially well-distributed, providing strong, dominant points across the image. The final set of Harris points is 
-                shown below.</p>
-            <img src="anms_toy.png" alt="Toy Panorama">
-        </div>
-    </div>
+               <p> Eulerian Video Magnification (Wu et al., 2012) is a method to amplify subtle variations in videos, 
+                   such as blood flow and low-amplitude motion. By decomposing video frames into spatial frequency 
+                   bands, isolating temporal variations using frequency domain filters, and amplifying these signals, 
+                   we can visualize changes that are otherwise imperceptible to the naked eye. In this project, 
+                   I implemented Eulerian Video Magnification to analyze three videos: <strong>face.mp4</strong>, 
+        <strong>baby2.mp4</strong>, and my custom video <strong>myhand.mp4</strong>. Each video highlights 
+        different types of signals, from blood flow to subtle movements.
+    </p>
 
     <div>
-        <h2 class="section-heading">Extracting Feature Descriptors</h2>
-        <div class="content">
-            <p>With a reduced set of Harris points, the next step is to match points between images using feature descriptors. Each descriptor is created by extracting a 40x40 window 
-                centered on a Harris point. This patch captures a 20-pixel radius around the point in all directions. To generate a smooth, blurred descriptor, the patch is downsampled to 
-                8x8 pixels instead of extracting a smaller patch directly.</p> 
-            <p>The descriptors are then normalized to have a mean of 0 and a standard deviation of 1, making them robust to affine changes in intensity (e.g. bias and gain). These 
-                normalized feature descriptors allow consistent and reliable matching between images.</p>
-        </div>
-    </div>
+        <div class="section">
+    <h2>Process</h2>
 
-    <div>
-        <h2 class="section-heading">Matching Feature Descriptors</h2>
-        <div class="content">
-            <p>To match feature descriptors, we compare all descriptor pairs between the two images using Sum of Squared Differences (SSD) or Nearest-Neighbor (NN) scores, where lower 
-                scores indicate better matches. We first narrow the candidates by selecting each feature’s nearest neighbor. Next, we calculate the ratio between the 
-                nearest-neighbor score and the second-nearest-neighbor score. If this ratio is below a chosen threshold (0.4 worked well in my testing), we accept the match. The resulting 
-                matches are visualized with randomly colored points to highlight correspondences between the images.</p>
-        </div>
-        <h3 class="subsection-heading">Results</h3>
-        <div class="content">
-            <p> Even though some mismatches remain, the majority of the matches are accurate and reliable.</p>
-            <img src="matches.png" alt="Toy Panorama">
-        </div>
-    </div>
+    <h3>Laplacian Pyramids</h3>
+    <p>
+        The first step was to construct Laplacian pyramids for each video frame. Each level of the Laplacian pyramid isolates spatial frequency bands. I built the pyramid by:
+    </p>
+    <ol>
+        <li>Creating a Gaussian pyramid, where each successive level is blurred and downsized.</li>
+        <li>Computing the difference between adjacent Gaussian levels to construct the Laplacian levels.</li>
+        <li>Processing all frames in the video to create Laplacian pyramids for temporal filtering.</li>
+    </ol>
+    
+    <h3>Temporal Filtering</h3>
+    <p>
+        Temporal filtering isolates the desired frequency bands in the time domain. Using a Butterworth band-pass filter, I filtered pixel values across time to extract subtle variations. For example:
+    </p>
+    <ul>
+        <li><strong>face.mp4:</strong> Frequencies between 0.83–1.0 Hz were targeted to amplify blood flow signals.</li>
+        <li><strong>baby2.mp4:</strong> Frequencies between 2.33–2.67 Hz were chosen to highlight pulsations.</li>
+        <li><strong>myhand.mp4:</strong> Frequencies between 0.6–1.2 Hz were amplified to reveal my pulse.</li>
+    </ul>
 
-    <div>
-        <h2 class="section-heading">RANSAC</h2>
-        <div class="content">
-            <p>To eliminate false positives from the feature matching process, we apply RANSAC. In each iteration, a random set of 4 matches is selected to compute a homography. We then 
-                evaluate how well this homography aligns the remaining matches, counting the number of inliers it produces. The homography with the highest number of inliers is selected 
-                as the final result. While some true matches may be lost, most correct matches are retained. Also, all incorrect matches are removed which leads to more reliable stitching.</p>
-        </div>
-        <h3 class="subsection-heading">Results</h3>
-        <div class="content">
-            <img src="ransac.png" alt="Toy Panorama">
-        </div>
-    </div>
+    <h3>Signal Amplification</h3>
+    <p>
+        After filtering, the extracted signals were amplified by a factor of <code>alpha = 10</code>. Equalization constants were applied to balance the amplification:
+    </p>
+    <ul>
+        <li><strong>face.mp4:</strong> Equalization constant = 0.31</li>
+        <li><strong>baby2.mp4:</strong> Equalization constant = 0.24</li>
+        <li><strong>myhand.mp4:</strong> Equalization constant = 0.24</li>
+    </ul>
+    <p>
+        These amplified signals were added back to the original signals, emphasizing subtle variations.
+    </p>
 
-     <div>
-        <h2 class="section-heading">Blending into a Mosaic</h2>
-        <div class="content">
-            <p>I used the same techniques as Part A. First, I computed a homography matrix to warp one image onto the plane of another. Then, I calculated the bounding box and necessary shifts to align the 
-              warped image with the target image. Finally, both images were stitched together within the mosaic by placing them at their computed positions in the combined frame.</p>
-            <p>I applied this process to create a mosaic of stuffed animals (real-world example) and used blending techniques to eliminate sharp edges. I also experimented with Dota 2 
-              screenshots to explore how parts of a video game map look on a larger scale, as the in-game view is limited. I tested the process on different landscapes, including the 
-              “lane,” which contains mostly similar textures, and the “trees,” which has intricate leaf details.</p>
-        </div>
+    <h3>Reconstruction</h3>
+    <p>
+        The final step was reconstructing the video by collapsing the Laplacian pyramid back into full-resolution frames. The magnified signals became visible in the final output videos.
+    </p>
+</div>
 
-        <h3 class="subsection-heading">Real-Life Results</h3>
-        <div class="content">
-            <p>Below are my manually and automatically stitched results side by side. They both appear to be similar.</p>
-            <img src="compare_toy.png" alt="Toy Panorama">
-        </div>
+<div class="section">
+    <h2>Results</h2>
 
-        
-        <h3 class="subsection-heading">Game Results (Lane)</h3>
-        <div class="content">
-            <p>Below are my manually and automatically stitched results side by side. They both appear to be similar.</p>
-             <img src="comparee_lane.png" alt="Dota">
-        </div>
+    <h3>1. face.mp4</h3>
+    <p>
+        Frequencies between 0.83–1.0 Hz were amplified to reveal blood flow. The t_start and t_end parameters were set to 85 and 245. Below is the resulting video:
+    </p>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/your_face_video_id" frameborder="0" allowfullscreen></iframe>
 
-        <h3 class="subsection-heading">Game Results (Trees)</h3>
-        <div class="content">
-            <p>Below are my manually and automatically stitched results side by side. The automatic stitching noticeably outperformed the manual approach, as evidenced by the absence of a shadow artifact along the 
-                bottom edge in the automatically stitched image (around 650 on the horizontal axis). This comparison highlights the precision and effectiveness of the automated process.</p>
-            <img src="compare_creep.png" alt="Tree">
-        </div>
-    </div>
+    <h3>2. baby2.mp4</h3>
+    <p>
+        Frequencies between 2.33–2.67 Hz were targeted to amplify pulsations. The t_start and t_end parameters were set to 23 and 253. Here is the result:
+    </p>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/your_baby2_video_id" frameborder="0" allowfullscreen></iframe>
 
-        <div>
-        <h2 class="section-heading">What I learned</h2>
-        <div class="content">
-            <p> The most mind-blowing part of this project has been discovering the power of feature matching based solely on pixel intensities. I had always assumed that recognizing 
-                similar points across images required a neural network or some form of “smart” AI to make sense of it all. But seeing how pixel intensities alone can accurately pinpoint 
-                matching features between images was eye-opening! It felt like unlocking a new layer of understanding in computer vision—realizing that the simplest data can sometimes 
-                yield the most precise results. </p>
-        </div>
+    <h3>3. myhand.mp4</h3>
+    <p>
+        For my custom video, frequencies between 0.6–1.2 Hz were amplified to highlight my pulse. The t_start and t_end parameters were also set to 23 and 253:
+    </p>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/your_myhand_video_id" frameborder="0" allowfullscreen></iframe>
+</div>
+
+<div class="section">
+    <h2>Bells & Whistles</h2>
+    <p>
+        I explored the impact of modifying the frequency ranges:
+    </p>
+    <ul>
+        <li><strong>Narrowed Range:</strong> For <em>face.mp4</em>, narrowing to 2.0–2.2 Hz highlighted fine details, while for <em>baby2.mp4</em>, narrowing to 0.4–0.7 Hz reduced noise but limited pulsation visibility.</li>
+        <li><strong>Widened Range:</strong> Expanding the range to 0.8–2.5 Hz for <em>face.mp4</em> and 0.5–3.0 Hz for <em>baby2.mp4</em> enhanced broader signals but introduced artifacts.</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>Challenges</h2>
+    <p>
+        One key challenge was tuning parameters like frequency range and equalization constants to balance magnification and artifact suppression. High magnification often led to noise, while overly narrow frequency ranges limited visible effects. Additionally, the computational cost of processing high-resolution videos required efficient implementation.
+    </p>
+</div>
     </div>
 
             
