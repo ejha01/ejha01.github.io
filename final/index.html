@@ -162,9 +162,38 @@
 
       <h3 class="subsection-heading">Results</h3>
         <div class="content">
-          <p> Below are examples illustrating how changing \(\beta\) simulates varying 
-            aperture sizes and their impact on the depth of field. </p>
+            <p>Below are examples illustrating how changing the parameter \(\beta\) simulates varying aperture sizes and 
+                their impact on the depth of field. Increasing \(\beta\) corresponds to using more images in the averaging 
+                process, mimicking a larger aperture.
+  </p>
+  <p>
+    The process worked particularly well for the candy and chess datasets, likely due to the presence of distinct depth layers 
+      and clear spatial details. The cards dataset, however, performed less effectively. This is because this image data set lacks 
+      significant depth variations, making the aperture adjustment less noticeable.
+  </p>
         </div>
+
+            <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap;">
+    <!-- Candy Depth GIF -->
+    <div style="text-align: center; margin: 10px;">
+      <img src="candy_aperture_gif.gif" alt="Candy Depth Refocusing" style="max-width: 300px; max-height: 300px;">
+      <p>\(\beta\): 0 to 8 (incremented by 1)</p>
+    </div>
+
+    <!-- Chess Depth GIF -->
+    <div style="text-align: center; margin: 10px;">
+      <img src="chess_aperture_gif.gif" alt="Chess Depth Refocusing" style="max-width: 300px; max-height: 300px;">
+      <p>\(\beta\): 0 to 8 (incremented by 1)</p>
+    </div>
+
+    <!-- Cards Depth GIF -->
+    <div style="text-align: center; margin: 10px;">
+      <img src="cards_aperture_gif.gif" alt="Cards Depth Refocusing" style="max-width: 300px; max-height: 300px;">
+      <p>\(\beta\): 0 to 8 (incremented by 1)</p>
+    </div>
+        </div>
+      
+    </div>
           
     </div>
 
